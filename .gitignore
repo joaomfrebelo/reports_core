@@ -8,3 +8,5 @@
 /target/surefire-reports/*
 .idea
 /lib/*.jar
+/target
+/src/test/resources/reports/MyReports/.project*
