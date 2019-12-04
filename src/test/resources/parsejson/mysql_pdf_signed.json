@@ -1,0 +1,112 @@
+{
+  "rreport": {
+    "-xmlns": "urn:rebelo.reports.core.parse.pojo",
+    "-xmlns:xsi": "http://www.w3.org/2001/XMLSchema-instance",
+    "-xsi:schemaLocation": "urn:RReports_CLI:1.0 file:///D:/NetBeansProjects/Java/reports_core/src/main/resources/schema_1_0.xsd",
+    "jasperfile": "/sakila.jasper",
+    "reporttype": {
+      "pdf": {
+        "outputfile": "/sakila_xmlparse_signed.pdf",
+        "sign": {
+          "keystore": {
+            "path": "/certificates/keystore.ks",
+            "password": "password",
+            "certificate": {
+              "name": "rreports",
+              "password": "password"
+            }
+          },
+          "level": "CERTIFIED_NO_CHANGES_ALLOWED",
+          "type": "SELF",
+          "rectangle": {
+            "visible": "true",
+            "position": {
+              "x": "100",
+              "y": "100",
+              "width": "100",
+              "height": "100",
+              "rotation": "0"
+            }
+          },
+          "location": "Lisbon - Sintra",
+          "reazon": "Test"
+        }
+      }
+    },
+    "datasource": {
+      "database": {
+        "connectionString": "jdbc:mysql://localhost/sakila",
+        "driver": "com.mysql.jdbc.Driver",
+        "user": "rebelo",
+        "password": "password"
+      }
+    },
+    "parameters": {
+      "parameter": [
+        {
+          "type": "string",
+          "name": "P_STRING",
+          "value": "Parameter String"
+        },
+        {
+          "type": "bool",
+          "name": "P_BOOLEAN",
+          "value": "true"
+        },
+        {
+          "type": "double",
+          "name": "P_DOUBLE",
+          "value": "999"
+        },
+        {
+          "type": "float",
+          "name": "P_FLOAT",
+          "value": "9.09"
+        },
+        {
+          "type": "integer",
+          "name": "P_INTEGER",
+          "value": "9"
+        },
+        {
+          "type": "long",
+          "name": "P_LONG",
+          "value": "49"
+        },
+        {
+          "type": "short",
+          "name": "P_SHORT",
+          "value": "129"
+        },
+        {
+          "type": "bigdecimal",
+          "name": "P_BIG_DECIMAL",
+          "value": "19"
+        },
+        {
+          "type": "sqldate",
+          "name": "P_SQL_DATE",
+          "value": "1254729890"
+        },
+        {
+          "type": "sqltime",
+          "name": "P_SQL_TIME",
+          "value": "199"
+        },
+        {
+          "type": "timestamp",
+          "name": "P_TIMESTAMPT",
+          "value": "199999"
+        },
+        {
+          "type": "date",
+          "name": "P_DATE",
+          "value": {
+            "-format": "yyyy-MM-dd",
+            "#text": "1969-10-05"
+          }
+        }
+      ]
+    }
+  }
+}

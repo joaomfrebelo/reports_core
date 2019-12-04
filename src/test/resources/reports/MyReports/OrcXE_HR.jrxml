@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="OrcXE_HR" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="feb087ca-ffc0-4083-b900-9c81a47fd006">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Oracle XE"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value="IkhSIi4iREVQQVJUTUVOVFMiIEFTICw5Myw0OCwwYTBiYTAwNC01NmM4LTQzZjctODc4Yy05NDFi&#xA;ZWUwNmZhZjE7&#xA;"/>
+	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
+	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
+	<queryString>
+		<![CDATA[SELECT "HR"."DEPARTMENTS"."DEPARTMENT_ID",
+	"HR"."DEPARTMENTS"."DEPARTMENT_NAME",
+	"HR"."DEPARTMENTS"."MANAGER_ID",
+	"HR"."DEPARTMENTS"."LOCATION_ID"
+FROM "HR"."DEPARTMENTS"
+where rownum <= 9]]>
+	</queryString>
+	<field name="DEPARTMENT_ID" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="DEPARTMENT_ID"/>
+	</field>
+	<field name="DEPARTMENT_NAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DEPARTMENT_NAME"/>
+	</field>
+	<field name="MANAGER_ID" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="MANAGER_ID"/>
+	</field>
+	<field name="LOCATION_ID" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.label" value="LOCATION_ID"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="29" splitType="Stretch">
+			<staticText>
+				<reportElement x="-20" y="0" width="595" height="25" uuid="e9ab244a-9a2c-4bcf-8b48-b17bf5a34663">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Rebelo Reports Library Test]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="25" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="180" height="20" uuid="7f83cab7-a1c2-41e2-ba6a-9c2db3a8465a">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="76ebda8a-45a4-4960-a3bc-5b9d079fdccd"/>
+				</reportElement>
+				<text><![CDATA[DEPARTMENT_ID]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="370" height="20" uuid="17451c8e-069f-4d18-a497-52c8b2155eeb">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e36c96c9-1533-495a-9117-9522b48b40b5"/>
+				</reportElement>
+				<text><![CDATA[DEPARTMENT_NAME]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="32" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="180" height="20" uuid="1ae7fcfe-2024-4e38-9bf9-07614e38b2df">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="76ebda8a-45a4-4960-a3bc-5b9d079fdccd"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEPARTMENT_ID}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="370" height="20" uuid="b89cbd32-4c54-4f3e-89bf-6eced8d6c9ef">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="e36c96c9-1533-495a-9117-9522b48b40b5"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEPARTMENT_NAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>

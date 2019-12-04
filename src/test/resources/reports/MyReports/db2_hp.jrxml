@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.8.0.final using JasperReports Library version 6.8.0-2ed8dfabb690ff337a5797129f2cd92902b0c87b  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="db2_hp" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="85b24759-c8b7-4d83-b77b-dcac3c115c4b">
+	<property name="com.jaspersoft.studio.data.sql.tables" value="IkhQIi4iREVQVCIgQVMgLDExOCw0NiwyMmZjN2VlMC00N2ZjLTQxMTAtOThmZi0xMDQ0ZDFjZjQ4&#xA;ZDk7&#xA;"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DB2 - Sample"/>
+	<property name="net.sf.jasperreports.export.text.character.width" value="7.238"/>
+	<property name="net.sf.jasperreports.export.text.character.height" value="13.948"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT "HP"."DEPT"."DEPTNO",
+	"HP"."DEPT"."DEPTNAME",
+	"HP"."DEPT"."MGRNO",
+	"HP"."DEPT"."ADMRDEPT",
+	"HP"."DEPT"."LOCATION"
+FROM "HP"."DEPT"]]>
+	</queryString>
+	<field name="DEPTNO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DEPTNO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DEPARTMENT"/>
+	</field>
+	<field name="DEPTNAME" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="DEPTNAME"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DEPARTMENT"/>
+	</field>
+	<field name="MGRNO" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="MGRNO"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DEPARTMENT"/>
+	</field>
+	<field name="ADMRDEPT" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="ADMRDEPT"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DEPARTMENT"/>
+	</field>
+	<field name="LOCATION" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.label" value="LOCATION"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="DEPARTMENT"/>
+	</field>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="31" splitType="Stretch">
+			<staticText>
+				<reportElement x="-20" y="0" width="595" height="25" uuid="b0503016-8994-4397-ad83-2f5e1dca9045">
+					<property name="com.jaspersoft.studio.unit.width" value="px"/>
+				</reportElement>
+				<textElement textAlignment="Center">
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Rebelo Reports Library Test]]></text>
+			</staticText>
+		</band>
+	</title>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="180" height="20" uuid="fddbbea6-c2d0-4542-bf1d-5261e3c1d5b4">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69512f04-7224-4aa6-89e1-f9fb0f74c266"/>
+				</reportElement>
+				<text><![CDATA[DEPTNO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="180" y="0" width="370" height="20" uuid="75784b38-7734-4399-a39f-80cabe35f933">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="aa762d7b-d522-4438-b31b-9b8ab95cf79c"/>
+				</reportElement>
+				<text><![CDATA[DEPTNAME]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="180" height="20" uuid="7092ab2c-ff1e-491f-b7f2-125df1381f2f">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69512f04-7224-4aa6-89e1-f9fb0f74c266"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEPTNO}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="180" y="0" width="380" height="20" uuid="6fcb9bb4-4b62-47eb-85a2-6790792791a0">
+					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="aa762d7b-d522-4438-b31b-9b8ab95cf79c"/>
+				</reportElement>
+				<textFieldExpression><![CDATA[$F{DEPTNAME}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+</jasperReport>
