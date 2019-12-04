@@ -1,0 +1,6 @@
+rebelo.reports.core
+rebelo.reports.core.common
+rebelo.reports.core.datasource
+rebelo.reports.core.parse
+rebelo.reports.core.parse.pojo
+rebelo.reports.core.sign
