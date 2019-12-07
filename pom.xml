@@ -61,12 +61,14 @@
                     <arguments>-Dgpg.passphrase=${gpg.passphrase}</arguments>
                 </configuration>
                 <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.scm</groupId>
-                        <artifactId>maven-scm-provider-gitexe</artifactId>
-                        <version>1.9.5</version>
-                    </dependency>
-                </dependencies>
+                    <!--
+               <dependency>
+                   <groupId>org.apache.maven.scm</groupId>
+                   <artifactId>maven-scm-provider-gitexe</artifactId>
+                   <version>1.9.5</version>
+               </dependency>
+                    -->
+           </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -97,19 +99,21 @@
                 </executions>
             </plugin>
         </plugins>
-    <testResources>
-        <testResource>
-            <directory>${project.basedir}/src/test/resources</directory>
-            <targetPath>${project.basedir}/target/test-classes</targetPath>
-        </testResource>
-    </testResources>
+        <testResources>
+            <testResource>
+                <directory>${project.basedir}/src/test/resources</directory>
+                <targetPath>${project.basedir}/target/test-classes</targetPath>
+            </testResource>
+        </testResources>
     </build>
+    <!--
     <scm>
         <connection>scm:git:git://github.com/dexecutor/dependent-tasks-executor.git</connection>
         <developerConnection>scm:git:git@github.com:dexecutor/dexecutor.git</developerConnection>
         <url>https://github.com/dexecutor/dependent-tasks-executor</url>
         <tag>reports_core-1.0-Beta</tag>
     </scm>
+    -->
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
