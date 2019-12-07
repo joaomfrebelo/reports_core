@@ -68,7 +68,7 @@
                    <version>1.9.5</version>
                </dependency>
                     -->
-           </dependencies>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>
@@ -87,6 +87,9 @@
                 <version>3.0.1</version>
                 <configuration>
                     <doclint>none</doclint>
+                    <additionalOptions>
+                        <additionalOption>-Xdoclint:none</additionalOption>
+                    </additionalOptions>
                 </configuration>
                 <executions>
                     <execution>
@@ -131,6 +134,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <additionalJOption>-Xdoclint:none</additionalJOption>
     </properties>
     <repositories>
         <repository>
