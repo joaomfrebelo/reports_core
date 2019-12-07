@@ -16,8 +16,10 @@
  */
 package rebelo.reports.core;
 
-import com.sun.istack.internal.NotNull;
+import java.io.File;
+import javax.validation.constraints.NotNull;
 import java.util.HashMap;
+import javax.validation.constraints.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rebelo.reports.core.common.Message;
@@ -103,6 +105,7 @@ public class RRProperties {
      *
      * @return
      */
+    @NotNull
     public String getEncoding() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE, "encoding", encoding));
         return encoding;
@@ -114,7 +117,7 @@ public class RRProperties {
      * @param encoding
      * @throws NullNotAllowedException
      */
-    public void setEncoding(String encoding) throws NullNotAllowedException {
+    public void setEncoding(@NotNull String encoding) throws NullNotAllowedException {
         if (encoding == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "encoding");
             LOG.error(msg);
@@ -130,6 +133,7 @@ public class RRProperties {
      * @return
      * @throws NullNotAllowedException
      */
+    @NotNull
     public String getJasperFile() throws NullNotAllowedException {
         if (jasperFile == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "jasperFile");
@@ -146,7 +150,7 @@ public class RRProperties {
      * @param jasperFile
      * @throws NullNotAllowedException
      */
-    public void setJasperFile(String jasperFile) throws NullNotAllowedException {
+    public void setJasperFile(@NotNull String jasperFile) throws NullNotAllowedException {
         if (jasperFile == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "jasperFile");
             LOG.error(msg);
@@ -162,6 +166,7 @@ public class RRProperties {
      * @return
      * @throws NullNotAllowedException
      */
+    @NotNull
     public String getOutputFile() throws NullNotAllowedException {
         if (outputFile == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "outputFile");
@@ -178,13 +183,24 @@ public class RRProperties {
      * @param outputFile
      * @throws NullNotAllowedException
      */
-    public void setOutputFile(String outputFile) throws NullNotAllowedException {
+    public void setOutputFile(@NotNull String outputFile) throws NullNotAllowedException, RRPropertiesException {
         if (outputFile == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "outputFile");
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
         LOG.trace(() -> String.format(Message.SETTED_VALUE, "outputFile", outputFile));
+
+        File out = new File(outputFile);
+        if (out.getParent() != null) {
+            if (out.getParentFile().isDirectory() == false) {
+                out.getParentFile().mkdir();
+                LOG.trace(() -> String.format(Message.SETTED_VALUE, "directory outputFile created", outputFile));
+            }
+        }else{
+            LOG.error("Outpufile path parente is not a directory");
+            throw new RRPropertiesException("Outpufile path parente is not a directory");
+        }
         this.outputFile = outputFile;
     }
 
@@ -194,7 +210,7 @@ public class RRProperties {
      * @param type
      * @throws NullNotAllowedException
      */
-    public void setType(Types type) throws NullNotAllowedException {
+    public void setType(@NotNull Types type) throws NullNotAllowedException {
         if (type == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "type");
             LOG.error(msg);
@@ -209,6 +225,7 @@ public class RRProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public Types getType() throws NullNotAllowedException {
         if (type == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "type");
@@ -249,6 +266,7 @@ public class RRProperties {
      *
      * @return
      */
+    @NotNull
     public HashMap<String, Object> getParameters() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE,
                 "parameter", "parameters HashMap"));
@@ -260,20 +278,21 @@ public class RRProperties {
      *
      * @return
      */
+    @Null
     public rebelo.reports.core.datasource.IRRDsProperties getDataSourceProperties() {
         return this.dsProp;
     }
 
     /**
-     * 
-     *  Set the datasource properties
-     * 
-     * @param dsProp 
+     *
+     * Set the datasource properties
+     *
+     * @param dsProp
      */
-    public void setDataSourceProperties(IRRDsProperties dsProp){
+    public void setDataSourceProperties(@NotNull IRRDsProperties dsProp) {
         this.dsProp = dsProp;
     }
-        
+
     /**
      * Get the report type properties To configure The Streamoutput or the
      * exporter output get the typeProperties and configure teh instance You
@@ -284,6 +303,7 @@ public class RRProperties {
      * @return
      * @throws java.lang.Exception
      */
+    @NotNull
     public Object getTypeProperties() throws Exception {
         if (typePropertie == null) {
             switch (type) {
@@ -329,8 +349,8 @@ public class RRProperties {
                 case print:
                     typePropertie = new RRPrintProperties();
                     break;
-                    default:
-                        throw new Exception("Unknow type in RRPropertis getTypeProperties");
+                default:
+                    throw new Exception("Unknow type in RRPropertis getTypeProperties");
             }
         }
         return typePropertie;

@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core.datasource;
 
+import javax.validation.constraints.Null;
 import net.sf.jasperreports.engine.JRDataSource;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -57,6 +58,7 @@ public abstract class ARRDsJRDataSource implements IRRDsProperties{
      * Get Date Pattern
      * @return 
      */
+    @Null
     public String getDatePattern() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE, "getDatePattern", datePattern == null ? "null" : datePattern));
         return datePattern;
@@ -68,6 +70,7 @@ public abstract class ARRDsJRDataSource implements IRRDsProperties{
      * 
      * @param datePattern 
      */
+    @Null
     public void setDatePattern(String datePattern) {
         LOG.trace(() -> String.format(Message.SETTED_VALUE, "getDatePattern", datePattern == null ? "null" : datePattern));
         this.datePattern = datePattern;
@@ -77,6 +80,7 @@ public abstract class ARRDsJRDataSource implements IRRDsProperties{
      * Get Number Pattern
      * @return 
      */
+    @Null
     public String getNumberPattern() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE, "getNumberPattern", numberPattern == null ? "null" : numberPattern));
         return numberPattern;
@@ -86,6 +90,7 @@ public abstract class ARRDsJRDataSource implements IRRDsProperties{
      * Set Number Pattern
      * @param numberPattern 
      */
+    @Null
     public void setNumberPattern(String numberPattern) {
         LOG.trace(() -> String.format(Message.SETTED_VALUE, "getNumberPattern", numberPattern == null ? "null" : numberPattern));
         this.numberPattern = numberPattern;

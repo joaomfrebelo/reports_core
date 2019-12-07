@@ -16,7 +16,8 @@
  */
 package rebelo.reports.core;
 
-import com.sun.istack.internal.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.HashPrintServiceAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
@@ -47,7 +48,7 @@ public class RRPrintProperties {
      * EX2: "\\\\S-BPPRINT\\HP Color LaserJet 4700"; // examlpe to network
      * shared printer
      */
-    @Nullable
+    @Null
     private String selectedPrinter;
 
     /**
@@ -70,6 +71,15 @@ public class RRPrintProperties {
         this.simPrintExpConf.setPrintServiceAttributeSet(printServiceAttributeSet);
     }
 
+    /**
+     * 
+     * getSimplePrintServiceExporterConfiguration
+     * 
+     * Config the printer service exporter
+     * 
+     * @return 
+     */
+    @NotNull
     public SimplePrintServiceExporterConfiguration getSimplePrintServiceExporterConfiguration() {
         LOG.trace("Getting SimplePrintServiceExporterConfiguration");
         return simPrintExpConf;
@@ -80,7 +90,7 @@ public class RRPrintProperties {
      *
      * @return
      */
-    @Nullable
+    @Null
     public String getSelectedPrinter() {
         return selectedPrinter;
     }
@@ -90,7 +100,7 @@ public class RRPrintProperties {
      *
      * @param selectedPrinter
      */
-    public void setSelectedPrinter(@Nullable String selectedPrinter) {
+    public void setSelectedPrinter(@Null String selectedPrinter) {
         this.selectedPrinter = selectedPrinter;
     }
 
@@ -99,6 +109,7 @@ public class RRPrintProperties {
      *
      * @return
      */
+    @NotNull
     public PrintRequestAttributeSet getPrintRequestAttributeSet() {
         return printRequestAttributeSet;
     }
@@ -108,6 +119,7 @@ public class RRPrintProperties {
      *
      * @return
      */
+    @NotNull
     public PrintServiceAttributeSet getPrintServiceAttributeSet() {
         return printServiceAttributeSet;
     }

@@ -16,9 +16,10 @@
  */
 package rebelo.reports.core.datasource;
 
-import com.sun.istack.internal.Nullable;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rebelo.reports.core.common.Message;
@@ -48,13 +49,13 @@ public class RRDsDatabase implements IRRDsProperties {
     /**
      * User to connect to data source
      */
-    @Nullable
+    @Null
     private String user;
 
     /**
      * Password to connect data source
      */
-    @Nullable
+    @Null
     private String password;
 
     public RRDsDatabase() {
@@ -69,6 +70,7 @@ public class RRDsDatabase implements IRRDsProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public String getDriver() throws rebelo.reports.core.NullNotAllowedException {
         if (driver == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "driver");
@@ -86,7 +88,7 @@ public class RRDsDatabase implements IRRDsProperties {
      * @param driver
      * @throws rebelo.reports.core.NullNotAllowedException
      */
-    public void setDriver(String driver) throws rebelo.reports.core.NullNotAllowedException {
+    public void setDriver(@NotNull String driver) throws rebelo.reports.core.NullNotAllowedException {
         if (driver == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "driver");
             LOG.error(msg);
@@ -101,6 +103,7 @@ public class RRDsDatabase implements IRRDsProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public String getConnString() throws rebelo.reports.core.NullNotAllowedException {
         if (connString == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "connection string");
@@ -118,7 +121,7 @@ public class RRDsDatabase implements IRRDsProperties {
      * @param connString
      * @throws rebelo.reports.core.NullNotAllowedException
      */
-    public void setConnString(String connString) throws rebelo.reports.core.NullNotAllowedException {
+    public void setConnString(@NotNull String connString) throws rebelo.reports.core.NullNotAllowedException {
         if (connString == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "connection string");
             LOG.warn(msg);
@@ -133,7 +136,7 @@ public class RRDsDatabase implements IRRDsProperties {
      *
      * @return
      */
-    @Nullable
+    @Null
     public String getUser() {
         LOG.trace(() -> String.format(
                 Message.GETTED_VALUE, "user", user == null ? "null" : user)
@@ -146,7 +149,7 @@ public class RRDsDatabase implements IRRDsProperties {
      *
      * @param user
      */
-    public void setUser(@Nullable String user) {
+    public void setUser(@Null String user) {
         LOG.trace(() -> String.format(
                 Message.SETTED_VALUE, "user", user == null ? "null" : user)
         );
@@ -158,7 +161,7 @@ public class RRDsDatabase implements IRRDsProperties {
      *
      * @return
      */
-    @Nullable
+    @Null
     public String getPassword() {
         LOG.trace(() -> String.format(
                 Message.GETTED_VALUE, "password", user == null ? "null" : "!!! hidden !!!")
@@ -171,7 +174,7 @@ public class RRDsDatabase implements IRRDsProperties {
      *
      * @param password
      */
-    public void setPassword(@Nullable String password) {
+    public void setPassword(@Null String password) {
         LOG.trace(() -> String.format(
                 Message.SETTED_VALUE, "password", user == null ? "null" : "!!! hidden !!!")
         );
@@ -185,6 +188,7 @@ public class RRDsDatabase implements IRRDsProperties {
      * @throws rebelo.reports.core.datasource.DataSourceException
      */
     @Override
+    @NotNull
     public Connection getDataSource() throws DataSourceException{
         try{
         LOG.debug("Load driver class");

@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import java.io.File;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import net.sf.jasperreports.export.SimpleXlsxExporterConfiguration;
 import org.apache.logging.log4j.Level;
@@ -39,10 +40,14 @@ public class RRXlsxPropertiesTest {
     }
     
     @BeforeClass
-    public static void setUpClass() throws NullNotAllowedException {
+    public static void setUpClass() throws NullNotAllowedException, RRPropertiesException {
         Configurator.setLevel(rebelo.reports.core.RRXlsxProperties.class.getName(), Level.ALL);
         RRProperties rrProp = new RRProperties();
-        rrProp.setOutputFile("teste");
+        ClassLoader classLoader = RRTextPropertiesTest.class.getClassLoader();
+        File resDir = new File(classLoader.getResource("./").getFile());
+        String out = new File(resDir.getAbsolutePath() +  "/generated_reports/test")
+                .getAbsolutePath();
+        rrProp.setOutputFile(out);
         properties = new RRXlsxProperties(rrProp);
     }
     

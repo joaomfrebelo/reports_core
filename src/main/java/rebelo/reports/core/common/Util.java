@@ -33,6 +33,9 @@ public class Util {
      * @throws Exception
      */
     public static final boolean parseBool(String bool) throws Exception {
+        if(bool == null){
+            throw new Exception("A null value is not parseble to boolean");
+        }
         switch (bool.toLowerCase()) {
             case "0":
             case "off":

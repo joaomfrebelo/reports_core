@@ -22,7 +22,6 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -153,9 +152,14 @@ public class AParseTest {
 
         Parse parse = new Parse();
 
-        parse.setOutputBaseDir(resDirPath + "/parsexml/generated_reports");
-        parse.setJasperFileBaseDir(resDirPath);
-        parse.setKeyStoreBaseDir(resDirPath);
+        String outputBaseDir = resDirPath + "/parsexml/generated_reports";
+        parse.setOutputBaseDir(outputBaseDir);
+        
+        String jasperFileBaseDir = resDirPath;
+        parse.setJasperFileBaseDir(jasperFileBaseDir);
+        
+        String keyStoreBaseDir = resDirPath;
+        parse.setKeyStoreBaseDir(keyStoreBaseDir);
 
         this.verifyAsserts(parse.parse(xml));
     }
@@ -199,6 +203,7 @@ public class AParseTest {
      * @throws Exception
      */
     @Test
+    @org.junit.Ignore
     public void test9010ParseUrl() throws Exception {
         System.out.println("test0010Parse");
         ClassLoader classLoader = getClass().getClassLoader();

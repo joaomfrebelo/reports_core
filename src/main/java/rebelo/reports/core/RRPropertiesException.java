@@ -14,38 +14,16 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package rebelo.reports.core.parse;
-
-import javax.validation.constraints.NotNull;
-import org.xml.sax.SAXException;
-import rebelo.reports.core.RRProperties;
-import rebelo.reports.core.parse.pojo.Rreport;
+package rebelo.reports.core;
 
 /**
  *
- * Parser Class
- * 
  * @author João Rebelo
  */
-public class Parse extends AParse{
-    
-    public Parse(){
-        
-    }
-    
-    /**
-     * 
-     * Parse the Rreport (rebelo.reports.core.prase.pojo)
-     * 
-     * @param rreport
-     * @return
-     * @throws SAXException
-     * @throws Exception 
-     */
-    @Override
-    public RRProperties parse(@NotNull Rreport rreport) 
-            throws SAXException, Exception{
-        return super.parse(rreport);
+public class RRPropertiesException extends Exception{
+
+    public RRPropertiesException(String message) {
+        super(message);
     }
     
 }

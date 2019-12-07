@@ -19,11 +19,8 @@ package rebelo.reports.core.parse;
 import com.itextpdf.text.Rectangle;
 import java.io.File;
 import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import javax.xml.bind.Unmarshaller;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -68,6 +65,7 @@ public class ParseJsonTest {
      * @throws Exception
      */
     @Test
+    @org.junit.Ignore
     public void test9000ParseFile() throws Exception {
         System.out.println("test0010Parse");
         ClassLoader classLoader = getClass().getClassLoader();

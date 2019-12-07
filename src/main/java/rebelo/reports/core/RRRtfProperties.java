@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleRtfExporterConfiguration;
 
 /**
@@ -35,10 +36,10 @@ public class RRRtfProperties extends ARRPropSWEO{
      * @param prop 
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
-    public RRRtfProperties(RRProperties prop) throws NullNotAllowedException {
+    public RRRtfProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
         super(prop);
         this.simRtfExpConf = new SimpleRtfExporterConfiguration();
-        LOG.debug("Start instance");
+        LOG.debug("Start instance 'RRRtfProperties'");
     }
     
     /**
@@ -46,6 +47,7 @@ public class RRRtfProperties extends ARRPropSWEO{
      * 
      * @return
      */
+    @NotNull
     public SimpleRtfExporterConfiguration getSimpleRtfExporterConfiguration(){
         LOG.trace("Gettting SimpleRtfExporterConfiguration");
         return simRtfExpConf;

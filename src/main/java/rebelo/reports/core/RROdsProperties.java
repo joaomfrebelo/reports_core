@@ -17,7 +17,7 @@
 package rebelo.reports.core;
 
 import net.sf.jasperreports.export.SimpleOdsExporterConfiguration;
-
+import javax.validation.constraints.NotNull;
 /**
  *
  * @author João Rebelo
@@ -35,10 +35,10 @@ public class RROdsProperties extends ARRPropSOSEO{
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public RROdsProperties(RRProperties prop) throws NullNotAllowedException {
+    public RROdsProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
         super(prop);
         this.simOdsExpconfig = new SimpleOdsExporterConfiguration();
-        LOG.debug("Start instance");
+        LOG.debug("Start instance 'RROdsProperties'");
     }
     
     /**
@@ -46,6 +46,7 @@ public class RROdsProperties extends ARRPropSOSEO{
      * 
      * @return
      */
+    @NotNull
     public SimpleOdsExporterConfiguration getSimpleOdsExporterConfiguration() {
         LOG.trace("Gettting SimpleOdsExporterConfiguration");
         return simOdsExpconfig;

@@ -17,8 +17,8 @@
 package rebelo.reports.core.parse;
 
 import com.itextpdf.text.Rectangle;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import java.io.File;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -103,7 +103,7 @@ public abstract class AParse {
      *
      * @return
      */
-    @Nullable
+    @Null
     public String getOutputBaseDir() {
         return outputBaseDir;
     }
@@ -115,7 +115,7 @@ public abstract class AParse {
      *
      * @param outputBaseDir
      */
-    public void setOutputBaseDir(@Nullable String outputBaseDir) {
+    public void setOutputBaseDir(@Null String outputBaseDir) {
         this.outputBaseDir = outputBaseDir;
         LOG.debug(() -> String.format(
                 "OutputBaseDir seted to '%s'",
@@ -130,7 +130,7 @@ public abstract class AParse {
      *
      * @return
      */
-    @Nullable
+    @Null
     public String getJasperFileBaseDir() {
         return jasperFileBaseDir;
     }
@@ -142,7 +142,7 @@ public abstract class AParse {
      *
      * @param jasperFileBaseDir
      */
-    public void setJasperFileBaseDir(@Nullable String jasperFileBaseDir) {
+    public void setJasperFileBaseDir(@Null String jasperFileBaseDir) {
         this.jasperFileBaseDir = jasperFileBaseDir;
         LOG.debug(() -> String.format(
                 "JasperFileBaseDir seted to '%s'",
@@ -157,7 +157,7 @@ public abstract class AParse {
      *
      * @return
      */
-    @Nullable
+    @Null
     public String getKeyStoreBaseDir() {
         return keyStoreBaseDir;
     }
@@ -169,7 +169,7 @@ public abstract class AParse {
      *
      * @param keyStoreBaseDir
      */
-    public void setKeyStoreBaseDir(@Nullable String keyStoreBaseDir) {
+    public void setKeyStoreBaseDir(@Null String keyStoreBaseDir) {
         this.keyStoreBaseDir = keyStoreBaseDir;
         LOG.debug(() -> String.format(
                 "KeyStoreBaseDir seted to '%s'",

@@ -16,7 +16,10 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleDocxExporterConfiguration;
+import static rebelo.reports.core.RRHtmlProperties.LOG;
+import rebelo.reports.core.common.Message;
 
 /**
  *
@@ -35,10 +38,15 @@ public class RRDocxProperties extends ARRPropSOSEO{
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public RRDocxProperties(RRProperties prop) throws NullNotAllowedException {
+    public RRDocxProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
         super(prop);
+        if (prop == null) {
+            String msg = String.format(Message.SET_NULL_ERROR, "RRDocxProperties");
+            LOG.error(msg);
+            throw new NullNotAllowedException(msg);
+        }
         this.simDocxExpconfig = new SimpleDocxExporterConfiguration();
-        LOG.debug("Start instance");
+        LOG.debug("Start instance 'RRDocxProperties'");
     }
     
     /**
@@ -46,6 +54,7 @@ public class RRDocxProperties extends ARRPropSOSEO{
      * 
      * @return
      */
+    @NotNull
     public SimpleDocxExporterConfiguration getSimpleDocxExporterConfiguration(){
         LOG.trace("Gettting SimpleDocxExporterConfiguration");
         return simDocxExpconfig;

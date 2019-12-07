@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleXlsxExporterConfiguration;
 
 /**
@@ -30,7 +31,7 @@ public class RRXlsxProperties extends ARRPropSOSEO{
      */
     private final SimpleXlsxExporterConfiguration simXlsxExpconfig;
     
-    public RRXlsxProperties(RRProperties prop) throws NullNotAllowedException {
+    public RRXlsxProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
         super(prop);
         this.simXlsxExpconfig = new SimpleXlsxExporterConfiguration();
         LOG.debug("Start instance");
@@ -41,6 +42,7 @@ public class RRXlsxProperties extends ARRPropSOSEO{
      *
      * @return
      */
+    @NotNull
     public SimpleXlsxExporterConfiguration getSimpleXlsxExporterConfiguration(){        
         LOG.trace("Gettting SimpleXlsxExporterConfiguration");
         return simXlsxExpconfig;

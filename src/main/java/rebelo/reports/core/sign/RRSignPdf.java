@@ -30,6 +30,7 @@ import java.security.PrivateKey;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import com.itextpdf.text.pdf.PdfSignatureAppearance;
+import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import rebelo.reports.core.NullNotAllowedException;
@@ -66,7 +67,7 @@ public class RRSignPdf {
      * @param inputFile the file to be signed
      * @param outputFile the signed file
      */
-    public RRSignPdf(RRSignPdfProperties rRPdfProperties,
+    public RRSignPdf(@NotNull RRSignPdfProperties rRPdfProperties,
             String inputFile,
             String outputFile) {
         this.rRSignPdfProperties = rRPdfProperties;

@@ -16,10 +16,13 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static rebelo.reports.core.ARRPropSWEO.LOG;
+import rebelo.reports.core.common.Message;
 
 /**
  * The HTML exporter properties
@@ -50,8 +53,13 @@ public class RRHtmlProperties {
      * @param prop 
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
-    public RRHtmlProperties(RRProperties prop) throws NullNotAllowedException{
-        LOG.debug("Starting instance");
+    public RRHtmlProperties(@NotNull RRProperties prop) throws NullNotAllowedException{
+        LOG.debug("Starting instance 'RRHtmlProperties'");
+        if (prop == null) {
+            String msg = String.format(Message.SET_NULL_ERROR, "RRHtmlProperties");
+            LOG.error(msg);
+            throw new NullNotAllowedException(msg);
+        }
         this.prop = prop;
         this.simHtmlExpOut = new SimpleHtmlExporterOutput(prop.getOutputFile());
         this.simHtmlConfig = new SimpleHtmlExporterConfiguration();
@@ -62,6 +70,7 @@ public class RRHtmlProperties {
      * 
      * @return
      */
+    @NotNull
     public SimpleHtmlExporterOutput getSimpleHtmlExporterOutput(){
         LOG.trace("Gettting SimpleHtmlExporterOutput");
         return simHtmlExpOut;
@@ -72,6 +81,7 @@ public class RRHtmlProperties {
      * 
      * @return
      */
+    @NotNull
     public SimpleHtmlExporterConfiguration getSimpleHtmlExporterConfiguration(){
         LOG.trace("Gettting SimpleHtmlExporterConfiguration");
         return simHtmlConfig;

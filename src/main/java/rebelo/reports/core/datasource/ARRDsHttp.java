@@ -16,7 +16,7 @@
  */
 package rebelo.reports.core.datasource;
 
-import com.sun.istack.internal.NotNull;
+import javax.validation.constraints.NotNull;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +27,6 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 import rebelo.reports.core.NullNotAllowedException;
 import rebelo.reports.core.common.Message;
 
@@ -182,6 +181,7 @@ public abstract class ARRDsHttp extends ARRDsJRDataSource {
      * @throws java.io.IOException
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public HttpURLConnection getUrlConnection() throws DataSourceException, IOException, NullNotAllowedException {
         if (url == null) {
             throw new DataSourceException("Url for connection is not initialized or seted");
@@ -217,6 +217,7 @@ public abstract class ARRDsHttp extends ARRDsJRDataSource {
      *
      * @return
      */
+    @NotNull
     public String getEncode() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE, "getEncode", encode));
         return encode;
@@ -247,6 +248,7 @@ public abstract class ARRDsHttp extends ARRDsJRDataSource {
      * @throws IOException
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public InputStream getInputStream() throws DataSourceException, IOException, NullNotAllowedException {
         LOG.debug("Start getting connection input stream");
         LOG.trace("Setting request mode");

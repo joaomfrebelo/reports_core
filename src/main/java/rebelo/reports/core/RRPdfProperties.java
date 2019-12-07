@@ -16,10 +16,11 @@
  */
 package rebelo.reports.core;
 
-import com.sun.istack.internal.Nullable;
 import net.sf.jasperreports.export.SimplePdfExporterConfiguration;
 import rebelo.reports.core.common.Message;
 import rebelo.reports.core.sign.RRSignPdfProperties;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 
 /**
  * The class for definition of the PDF report properties
@@ -42,7 +43,7 @@ public class RRPdfProperties extends ARRPropSOSEO{
     /**
      * The signature properties
      */
-    @Nullable
+    @Null
     private RRSignPdfProperties signProp = null;
     
     /**
@@ -52,10 +53,10 @@ public class RRPdfProperties extends ARRPropSOSEO{
      * @param prop 
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
-    public RRPdfProperties(RRProperties prop) throws NullNotAllowedException {        
+    public RRPdfProperties(@NotNull RRProperties prop) throws NullNotAllowedException {        
         super(prop);
         this.pdfExportConfig = new SimplePdfExporterConfiguration();
-        LOG.debug("Start instance");
+        LOG.debug("Start instance 'RRPdfProperties'");
     }
     
     /**
@@ -63,6 +64,7 @@ public class RRPdfProperties extends ARRPropSOSEO{
      * 
      * @return
      */
+    @NotNull
     public SimplePdfExporterConfiguration getSimplePdfExporterConfiguration(){
         LOG.trace("Gettting SimplePdfExporterConfiguration");
         return pdfExportConfig;
@@ -72,6 +74,7 @@ public class RRPdfProperties extends ARRPropSOSEO{
      * Get if the pdf report is to be digital signed
      * @return 
      */
+    @NotNull
     public Boolean isSignPDF() {
         LOG.trace(()->String.format(Message.GETTED_VALUE, "signPDF", signPDF));
         return signPDF;
@@ -82,7 +85,7 @@ public class RRPdfProperties extends ARRPropSOSEO{
      * @param signPDF 
      * @throws NullNotAllowedException
      */
-    public void isSignPDF(Boolean signPDF)  throws NullNotAllowedException{
+    public void isSignPDF(@NotNull Boolean signPDF)  throws NullNotAllowedException{
         if(signPDF == null){
             String msg = String.format(Message.SET_NULL_ERROR, "signPDF");
             LOG.error(msg);
@@ -98,7 +101,7 @@ public class RRPdfProperties extends ARRPropSOSEO{
      * Get the signPdf properties
      * @return 
      */
-    @Nullable
+    @Null
     public rebelo.reports.core.sign.RRSignPdfProperties getSignProp() {
         LOG.trace(()->String.format(
                 Message.GETTED_VALUE, 
@@ -111,7 +114,7 @@ public class RRPdfProperties extends ARRPropSOSEO{
      * Set the signPdf properties
      * @param signProp 
      */
-    public void setSignProp(@Nullable rebelo.reports.core.sign.RRSignPdfProperties signProp) {
+    public void setSignProp(@Null rebelo.reports.core.sign.RRSignPdfProperties signProp) {
         LOG.trace(()->String.format(Message.SETTED_VALUE, 
                 "signProperties", 
                 signProp == null ? "null" : "rebelo.reports.core.sign.Properties instance"));

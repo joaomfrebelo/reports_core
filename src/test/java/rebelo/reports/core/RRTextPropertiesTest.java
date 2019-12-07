@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import java.io.File;
 import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import org.apache.logging.log4j.Level;
@@ -32,34 +33,40 @@ import static org.junit.Assert.*;
  * @author João Rebelo
  */
 public class RRTextPropertiesTest {
-    
+
     public static RRTextProperties properties;
-    
+
     public RRTextPropertiesTest() {
     }
-    
+
     @BeforeClass
-    public static void setUpClass() throws NullNotAllowedException {
+    public static void setUpClass() throws NullNotAllowedException, RRPropertiesException {
         Configurator.setLevel(rebelo.reports.core.RRTextProperties.class.getName(), Level.ALL);
         RRProperties rrProp = new RRProperties();
-        rrProp.setOutputFile("teste");
+        ClassLoader classLoader = RRTextPropertiesTest.class.getClassLoader();
+        File resDir = new File(classLoader.getResource("./").getFile());
+        String out = new File(resDir.getAbsolutePath() +  "/generated_reports/test")
+                .getAbsolutePath();
+        rrProp.setOutputFile(out);
         properties = new RRTextProperties(rrProp);
     }
-    
+
     @AfterClass
     public static void tearDownClass() {
     }
-    
+
     @Before
     public void setUp() {
     }
-    
+
     @After
     public void tearDown() {
     }
 
     /**
-     * Test of setSimpleTextExporterConfiguration method, of class RRTextProperties.
+     * Test of setSimpleTextExporterConfiguration method, of class
+     * RRTextProperties.
+     *
      * @throws rebelo.reports.core.NullNotAllowedException
      */
     @Test
@@ -69,10 +76,11 @@ public class RRTextPropertiesTest {
 
     /**
      * Test of getSimpleWriterExporterOutput method, of class RRCsvProperties.
-     * @throws NullNotAllowedException 
+     *
+     * @throws NullNotAllowedException
      */
     @Test
-    public void testGetSimpleWriterExporterOutput()throws NullNotAllowedException {
+    public void testGetSimpleWriterExporterOutput() throws NullNotAllowedException {
         assertTrue(properties.getSimpleWriterExporterOutput() instanceof SimpleWriterExporterOutput);
     }
 }

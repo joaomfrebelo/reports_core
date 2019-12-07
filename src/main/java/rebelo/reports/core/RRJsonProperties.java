@@ -16,10 +16,12 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleJsonExporterConfiguration;
 import net.sf.jasperreports.export.SimpleJsonExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rebelo.reports.core.common.Message;
 
 /**
  *
@@ -53,8 +55,13 @@ public class RRJsonProperties{
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public RRJsonProperties(RRProperties prop) throws NullNotAllowedException {
-        LOG.debug("Start instance");
+    public RRJsonProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
+        LOG.debug("Start instance 'RRJsonProperties'");
+        if (prop == null) {
+            String msg = String.format(Message.SET_NULL_ERROR, "RRJsonProperties");
+            LOG.error(msg);
+            throw new NullNotAllowedException(msg);
+        }
         this.simJsonExpconfig = new SimpleJsonExporterConfiguration();
         this.simpJsonExpOut = new SimpleJsonExporterOutput(prop.getOutputFile(), prop.getEncoding());
         this.prop = prop;
@@ -65,6 +72,7 @@ public class RRJsonProperties{
      * 
      * @return
      */
+    @NotNull
     public SimpleJsonExporterConfiguration getSimpleJsonExporterConfiguration(){
         LOG.trace("Gettting SimpleJsonExporterConfiguration");
         return simJsonExpconfig;
@@ -75,6 +83,7 @@ public class RRJsonProperties{
      * 
      * @return
      */
+    @NotNull
     public SimpleJsonExporterOutput getSimpleJsonExporterOutput(){
         LOG.trace("Gettting SimpleJsonExporterOutput");
         return simpJsonExpOut;

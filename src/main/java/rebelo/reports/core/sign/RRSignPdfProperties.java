@@ -17,10 +17,11 @@
 package rebelo.reports.core.sign;
 
 import com.itextpdf.text.Rectangle;
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.eclipse.persistence.annotations.Noncacheable;
 import rebelo.reports.core.NullNotAllowedException;
 import rebelo.reports.core.common.Message;
 
@@ -109,7 +110,7 @@ public class RRSignPdfProperties {
     /**
      * Signature rectangle
      */
-    @Nullable
+    @Null
     private Rectangle rectangle = null;
 
     /**
@@ -157,6 +158,7 @@ public class RRSignPdfProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public Level getLevel() throws NullNotAllowedException {
         if (level == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "level");
@@ -189,6 +191,7 @@ public class RRSignPdfProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public String getJavaKeyStorePath() throws NullNotAllowedException {
         if (javaKeyStorePath == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "JavaKeyStorePath");
@@ -221,6 +224,7 @@ public class RRSignPdfProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public String getJavaKeyStorePassword() throws NullNotAllowedException {
         if (javaKeyStorePassword == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "password");
@@ -252,6 +256,7 @@ public class RRSignPdfProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public String getCertificatePassword() throws NullNotAllowedException {
         if (certificatePassword == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "certificate password");
@@ -283,6 +288,7 @@ public class RRSignPdfProperties {
      * @return
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public String getCertificateName() throws NullNotAllowedException {
         if (certifricateName == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "certificate name");
@@ -313,6 +319,7 @@ public class RRSignPdfProperties {
      *
      * @return
      */
+    @NotNull
     public String getReazon() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE, "reazon", reazon));
         return reazon;
@@ -339,8 +346,9 @@ public class RRSignPdfProperties {
      *
      * @return
      */
+    @NotNull
     public String getLocation() {
-        LOG.trace("{}", () -> String.format(Message.GETTED_VALUE, "location", location));
+        LOG.trace(() -> String.format(Message.GETTED_VALUE, "location", location));
         return location;
     }
 
@@ -364,6 +372,7 @@ public class RRSignPdfProperties {
      *
      * @return
      */
+    @NotNull
     public String getContact() {
         LOG.trace(String.format(Message.GETTED_VALUE, "contact", contact));
         return contact;
@@ -390,6 +399,7 @@ public class RRSignPdfProperties {
      *
      * @return
      */
+    @NotNull
     public Boolean isVisible() {
         LOG.trace(() -> String.format(Message.SETTED_VALUE, "visible", visible.toString()));
         return visible;
@@ -401,6 +411,7 @@ public class RRSignPdfProperties {
      * @param visible
      * @throws rebelo.reports.core.NullNotAllowedException
      */
+    @NotNull
     public void isVisible(@NotNull Boolean visible) throws NullNotAllowedException {
         if (visible == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "visible");
@@ -416,7 +427,7 @@ public class RRSignPdfProperties {
      *
      * @return
      */
-    @Nullable
+    @Null
     public Rectangle getRectangle() {
         LOG.trace(() -> String.format(Message.GETTED_VALUE, "rectangle",
                 rectangle == null ? "null" : "Rectangle instance"));
@@ -428,7 +439,7 @@ public class RRSignPdfProperties {
      *
      * @param rectangle
      */
-    @Nullable
+    @Null
     public void setRectangle(Rectangle rectangle) {
         LOG.trace(String.format(
                 Message.SETTED_VALUE, "rectangle",
@@ -437,6 +448,7 @@ public class RRSignPdfProperties {
     }
 
     @Override
+    @NotNull
     public String toString() {
         return "RRSignPdfProperties{" + "type=" + type + ", level=" + level + ", "
                 + "javaKeyStorePath=" + javaKeyStorePath + ", javaKeyStorePassword=" 

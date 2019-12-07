@@ -16,7 +16,7 @@
  */
 package rebelo.reports.core;
 
-import com.sun.istack.internal.NotNull;
+import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -112,6 +112,7 @@ public class Report {
      * @return
      * @throws NullNotAllowedException
      */
+    @NotNull
     public RRProperties getProperties() throws NullNotAllowedException {
         if (prop == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "properties");
@@ -163,6 +164,7 @@ public class Report {
      * @throws rebelo.reports.core.NullNotAllowedException
      * @throws Exception
      */
+    @NotNull
     public JasperPrint getJasperPrint()
             throws DataSourceException, JRException, NullNotAllowedException, Exception {
 
@@ -199,6 +201,7 @@ public class Report {
      * @throws JRException
      * @throws Exception
      */
+    @NotNull
     public net.sf.jasperreports.export.Exporter getExporter() throws
             NullNotAllowedException,
             ClassNotFoundException,
@@ -210,7 +213,7 @@ public class Report {
 
         LOG.debug("Start generate report");
 
-        net.sf.jasperreports.export.Exporter exporter = null;
+        net.sf.jasperreports.export.Exporter exporter;
 
         switch (prop.getType()) {
             case pdf:
@@ -352,7 +355,7 @@ public class Report {
                 throw new Exception("Unuported report type "
                         .concat(prop.getType().toString()));
         }
-
+        
         return exporter;
     }
 

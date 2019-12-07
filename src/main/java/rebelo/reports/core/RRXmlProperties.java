@@ -16,10 +16,13 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleReportExportConfiguration;
 import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static rebelo.reports.core.RRProperties.LOG;
+import rebelo.reports.core.common.Message;
 
 /**
  * The XML exporrter properties
@@ -52,8 +55,13 @@ public class RRXmlProperties {
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public RRXmlProperties(RRProperties prop) throws NullNotAllowedException {
-        LOG.debug("Starting instance");
+    public RRXmlProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
+        LOG.debug("Starting instance 'RRXmlProperties'");
+        if (prop == null) {
+            String msg = String.format(Message.SET_NULL_ERROR, "RRXmlProperties");
+            LOG.error(msg);
+            throw new NullNotAllowedException(msg);
+        }
         this.prop = prop;
         this.simpXmlOut = new SimpleXmlExporterOutput(prop.getOutputFile(), prop.getEncoding());
         this.simRepCong = new SimpleReportExportConfiguration();
@@ -64,6 +72,7 @@ public class RRXmlProperties {
      * 
      * @return
      */
+    @NotNull
     public SimpleXmlExporterOutput getSimpleXmlExporterOutput() {
         LOG.trace("Gettting SimpleXmlExporterOutput");
         return simpXmlOut;
@@ -74,6 +83,7 @@ public class RRXmlProperties {
      * 
      * @return
      */
+    @NotNull
     public SimpleReportExportConfiguration getSimpleReportExportConfiguration(){
         LOG.trace("Gettting SimpleReportExportConfiguration");
         return simRepCong;

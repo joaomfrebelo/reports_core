@@ -16,9 +16,11 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import rebelo.reports.core.common.Message;
 
 /**
  *
@@ -48,7 +50,12 @@ public abstract class ARRPropSOSEO {
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public ARRPropSOSEO(RRProperties prop) throws NullNotAllowedException{
+    public ARRPropSOSEO(@NotNull RRProperties prop) throws NullNotAllowedException{
+        if (prop == null) {
+            String msg = String.format(Message.SET_NULL_ERROR, "ARRPropSOSEO");
+            LOG.error(msg);
+            throw new NullNotAllowedException(msg);
+        }
         this.prop = prop;
         simpleExportOutput = new SimpleOutputStreamExporterOutput(prop.getOutputFile());
     }
@@ -58,6 +65,7 @@ public abstract class ARRPropSOSEO {
      * 
      * @return 
      */
+    @NotNull
     public SimpleOutputStreamExporterOutput getSimpleOutputStreamExporterOutput(){
         LOG.trace("Gettting SimpleOutputStreamExporterOutput");
         return simpleExportOutput;

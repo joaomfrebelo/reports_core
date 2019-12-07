@@ -16,7 +16,7 @@
  */
 package rebelo.reports.core.datasource;
 
-import com.sun.istack.internal.NotNull;
+import javax.validation.constraints.NotNull;
 import java.io.File;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
@@ -38,6 +38,7 @@ public class RRDsFileXml extends ARRDsJRDataSource {
      * @return
      * @throws NullNotAllowedException
      */
+    @NotNull
     public File getFile() throws NullNotAllowedException {
         if (file == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "getFile");
@@ -70,6 +71,7 @@ public class RRDsFileXml extends ARRDsJRDataSource {
      * @throws DataSourceException 
      */
     @Override
+    @NotNull
     public JRDataSource getDataSource() throws DataSourceException {
         LOG.debug("Get data source");
         try {

@@ -16,9 +16,12 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import static rebelo.reports.core.ARRPropSOSEO.LOG;
+import rebelo.reports.core.common.Message;
 
 /**
  *
@@ -48,7 +51,12 @@ public abstract class ARRPropSWEO {
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public ARRPropSWEO(RRProperties prop) throws NullNotAllowedException{
+    public ARRPropSWEO(@NotNull RRProperties prop) throws NullNotAllowedException{
+        if (prop == null) {
+            String msg = String.format(Message.SET_NULL_ERROR, "ARRPropSWEO");
+            LOG.error(msg);
+            throw new NullNotAllowedException(msg);
+        }
         this.prop = prop;
         this.sweoutput = new SimpleWriterExporterOutput(prop.getOutputFile(), prop.getEncoding());
     }
@@ -58,6 +66,7 @@ public abstract class ARRPropSWEO {
      * 
      * @return 
      */
+    @NotNull
     public SimpleWriterExporterOutput getSimpleWriterExporterOutput(){
         LOG.trace("Gettting SimpleWriterExporterOutput");
         return sweoutput;

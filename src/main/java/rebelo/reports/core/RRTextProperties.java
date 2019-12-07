@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleTextExporterConfiguration;
 
 /**
@@ -35,7 +36,7 @@ public class RRTextProperties extends ARRPropSWEO{
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public RRTextProperties(RRProperties prop) throws NullNotAllowedException {
+    public RRTextProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
         super(prop);
         this.simTextExpConfig = new SimpleTextExporterConfiguration();
         LOG.debug("Start instance");
@@ -46,6 +47,7 @@ public class RRTextProperties extends ARRPropSWEO{
      * 
      * @return
      */
+    @NotNull
     public SimpleTextExporterConfiguration getSimpleTextExporterConfiguration(){
         LOG.trace("Gettting SimpleTextExporterConfiguration");
         return simTextExpConfig;

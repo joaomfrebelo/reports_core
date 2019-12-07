@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core.datasource;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.data.JRXmlDataSource;
 
@@ -27,6 +28,7 @@ import net.sf.jasperreports.engine.data.JRXmlDataSource;
 public class RRDsHttpXml extends ARRDsHttp {
 
     @Override
+    @NotNull
     public JRDataSource getDataSource() throws DataSourceException {
         LOG.debug("Get data source");
         try {

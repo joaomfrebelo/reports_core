@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import java.io.File;
 import java.util.HashMap;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -138,9 +139,10 @@ public class RRPropertiesTest {
     /**
      * Test of getOutputFilePath and getOutputFilePath method, of class
      * RRProperties.
+     * @throws rebelo.reports.core.RRPropertiesException
      */
     @Test
-    public void testSetGetOutputFilePath() {
+    public void testSetGetOutputFilePath() throws RRPropertiesException {
         System.out.println("setGetOutputFilePath");
         try {
             String value = "/path/output/file";
@@ -154,9 +156,11 @@ public class RRPropertiesTest {
 
     /**
      * Test set outpufilePath to null
+     * @throws rebelo.reports.core.RRPropertiesException
      */
+    @SuppressWarnings("null")
     @Test
-    public void testSetOutputFilePathNull() {
+    public void testSetOutputFilePathNull() throws RRPropertiesException {
         System.out.println("setOutputFilePathNull");
         try {
             propreties.setOutputFile(null);
@@ -222,6 +226,7 @@ public class RRPropertiesTest {
     /**
      * Test of getReportFormatsNull method, of class RRProperties.
      */
+    @SuppressWarnings("null")
     @Test
     public void testSetReportFormatsNull() {
         System.out.println("setReportFormatsNull");
@@ -267,6 +272,7 @@ public class RRPropertiesTest {
     /**
      * Test of SetKeyParametersNull, of class RRProperties.
      */
+    @SuppressWarnings("null")
     @Test
     public void testSetKeyParametersNull() {
         System.out.println("setKeyParametersNull");
@@ -283,6 +289,7 @@ public class RRPropertiesTest {
     /**
      * Test of SetValueParametersNull, of class RRProperties.
      */
+    @SuppressWarnings("null")
     @Test
     public void testSetValueParametersNull() {
         System.out.println("setValueParametersNull");
@@ -296,27 +303,75 @@ public class RRPropertiesTest {
         fail("failing seting null null of parameters, should throw NullNotAllowed");
     }
 
-    /**
-     * Test of getDataSourceProperties method, of class RRProperties.
-     */
-    @Test
-    public void testGetDataSourceProperties() {
-        assertThat(propreties.getDataSourceProperties(),
-                instanceOf(rebelo.reports.core.datasource.RRDsDatabase.class));
-    }
-
     @Test
     public void testGetTypeProperties() {
+        ClassLoader classLoader = getClass().getClassLoader();
+        File resDir = new File(classLoader.getResource("./").getFile());
+        String resDirPath = resDir.getAbsolutePath();
+        File out = new File(resDirPath + "/generated_reports/test");
+        
         for (RRProperties.Types type : RRProperties.Types.values()) {
             try {
                 RRProperties prop = new RRProperties();
+                prop.setOutputFile(out.getAbsolutePath());
                 prop.setType(type);
                 switch (type) {
                     case pdf:
-                        RRPdfProperties pdfprop = (RRPdfProperties)prop.getTypeProperties();
+                        RRPdfProperties pdfprop = (RRPdfProperties) prop.getTypeProperties();
                         assertTrue(pdfprop instanceof RRPdfProperties);
                         break;
-                                       
+                    case csv:
+                        RRCsvProperties csvprop = (RRCsvProperties) prop.getTypeProperties();
+                        assertTrue(csvprop instanceof RRCsvProperties);
+                        break;
+                    case docx:
+                        RRDocxProperties docxprop = (RRDocxProperties) prop.getTypeProperties();
+                        assertTrue(docxprop instanceof RRDocxProperties);
+                        break;
+                    case html:
+                        RRHtmlProperties htmlprop = (RRHtmlProperties) prop.getTypeProperties();
+                        assertTrue(htmlprop instanceof RRHtmlProperties);
+                        break;
+                    case json:
+                        RRJsonProperties jsonprop = (RRJsonProperties) prop.getTypeProperties();
+                        assertTrue(jsonprop instanceof RRJsonProperties);
+                        break;
+                    case ods:
+                        RROdsProperties odsprop = (RROdsProperties) prop.getTypeProperties();
+                        assertTrue(odsprop instanceof RROdsProperties);
+                        break;
+                    case odt:
+                        RROdtProperties odtprop = (RROdtProperties) prop.getTypeProperties();
+                        assertTrue(odtprop instanceof RROdtProperties);
+                        break;
+                    case pptx:
+                        RRPptxProperties pptxprop = (RRPptxProperties) prop.getTypeProperties();
+                        assertTrue(pptxprop instanceof RRPptxProperties);
+                        break;
+                    case print:
+                        RRPrintProperties printprop = (RRPrintProperties) prop.getTypeProperties();
+                        assertTrue(printprop instanceof RRPrintProperties);
+                        break;
+                    case rtf:
+                        RRRtfProperties rtfprop = (RRRtfProperties) prop.getTypeProperties();
+                        assertTrue(rtfprop instanceof RRRtfProperties);
+                        break;
+                    case text:
+                        RRTextProperties textprop = (RRTextProperties) prop.getTypeProperties();
+                        assertTrue(textprop instanceof RRTextProperties);
+                        break;
+                    case xls:
+                        RRXlsProperties xlsprop = (RRXlsProperties) prop.getTypeProperties();
+                        assertTrue(xlsprop instanceof RRXlsProperties);
+                        break;
+                    case xlsx:
+                        RRXlsxProperties xlsxprop = (RRXlsxProperties) prop.getTypeProperties();
+                        assertTrue(xlsxprop instanceof RRXlsxProperties);
+                        break;
+                    case xml:
+                        RRXmlProperties xmlprop = (RRXmlProperties) prop.getTypeProperties();
+                        assertTrue(xmlprop instanceof RRXmlProperties);
+                        break;
                     default:
                         fail(String.format("Unknow type '%s' to test in testGetTypeProperties", type.toString()));
                 }

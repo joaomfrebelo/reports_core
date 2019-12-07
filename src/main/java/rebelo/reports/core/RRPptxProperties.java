@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimplePptxExporterConfiguration;
 
 /**
@@ -31,21 +32,22 @@ public class RRPptxProperties extends ARRPropSOSEO{
      * @param prop 
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
-    public RRPptxProperties(RRProperties prop) throws NullNotAllowedException {
+    public RRPptxProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
         super(prop);
         this.simPptxExpconfig = new SimplePptxExporterConfiguration();
-        LOG.debug("Start instance");
+        LOG.debug("Start instance 'RRPptxProperties'");
     }
     
-/**
+    /**
+     * 
+     * Get the SimplePptxExporterConfiguration
+     * <br>
      * The SimplePptxExporterConfiguration
      * you can configure this Exporter
-     */
-        /**
-     * Get the SimplePptxExporterConfiguration
-     * 
+     *
      * @return
      */
+    @NotNull
     public SimplePptxExporterConfiguration getSimplePptxExporterConfiguration(){
         LOG.trace("Gettting SimplePptxExporterConfiguration");
         return simPptxExpconfig;

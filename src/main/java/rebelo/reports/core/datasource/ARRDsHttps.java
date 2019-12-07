@@ -18,6 +18,7 @@ package rebelo.reports.core.datasource;
 
 import java.io.IOException;
 import javax.net.ssl.HttpsURLConnection;
+import javax.validation.constraints.NotNull;
 import rebelo.reports.core.NullNotAllowedException;
 
 /**
@@ -39,6 +40,7 @@ public abstract class ARRDsHttps extends ARRDsHttp{
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
     @Override
+    @NotNull
     public HttpsURLConnection getUrlConnection() throws DataSourceException, IOException, NullNotAllowedException{
         if(url == null){
             throw new DataSourceException("Url for connection is not initialized or seted");
