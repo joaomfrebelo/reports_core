@@ -10,3 +10,4 @@
 /lib/*.jar
 /target
 /src/test/resources/reports/MyReports/.project*
+/src/assembly/**
