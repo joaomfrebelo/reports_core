@@ -22,6 +22,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import rebelo.reports.core.Report;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -58,7 +61,10 @@ public class RRDsDatabase implements IRRDsProperties {
     @Null
     private String password;
 
-    public RRDsDatabase() {
+    public RRDsDatabase() {        
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         LOG.debug(() -> "instance created");
     }
 

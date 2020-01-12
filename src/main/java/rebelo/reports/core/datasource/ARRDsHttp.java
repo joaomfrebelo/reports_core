@@ -27,7 +27,10 @@ import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.NullNotAllowedException;
+import rebelo.reports.core.Report;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -60,14 +63,15 @@ public abstract class ARRDsHttp extends ARRDsJRDataSource {
     protected final HashMap<String, String> parameters = new HashMap<>();
 
     /**
-     * The Http
-     */
-    private HttpURLConnection conn;
-
-    /**
      * Connection type
      */
     protected Type type;
+
+    public ARRDsHttp() {
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
+    }
 
     /**
      * Set the connection type GET|POST
@@ -186,10 +190,10 @@ public abstract class ARRDsHttp extends ARRDsJRDataSource {
         if (url == null) {
             throw new DataSourceException("Url for connection is not initialized or seted");
         }
-        if (conn == null) {
-            conn = (HttpURLConnection) url.openConnection();
-            setGeneric(conn);
-        }
+        
+        HttpURLConnection  conn = (HttpURLConnection) url.openConnection();
+        setGeneric(conn);
+        
         LOG.trace("Geting Url Connection (getUrlConnection)");
         return conn;
     }

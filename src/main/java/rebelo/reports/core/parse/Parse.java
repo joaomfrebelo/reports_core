@@ -16,9 +16,14 @@
  */
 package rebelo.reports.core.parse;
 
+import java.net.MalformedURLException;
 import javax.validation.constraints.NotNull;
+import javax.xml.bind.JAXBException;
 import org.xml.sax.SAXException;
+import rebelo.reports.core.NullNotAllowedException;
 import rebelo.reports.core.RRProperties;
+import rebelo.reports.core.RRPropertiesException;
+import rebelo.reports.core.datasource.DataSourceException;
 import rebelo.reports.core.parse.pojo.Rreport;
 
 /**
@@ -30,7 +35,7 @@ import rebelo.reports.core.parse.pojo.Rreport;
 public class Parse extends AParse{
     
     public Parse(){
-        
+        super();
     }
     
     /**
@@ -40,11 +45,22 @@ public class Parse extends AParse{
      * @param rreport
      * @return
      * @throws SAXException
-     * @throws Exception 
+     * @throws rebelo.reports.core.NullNotAllowedException
+     * @throws javax.xml.bind.JAXBException
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws rebelo.reports.core.parse.ParseException
+     * @throws java.net.MalformedURLException
+     * @throws rebelo.reports.core.datasource.DataSourceException
      */
     @Override
     public RRProperties parse(@NotNull Rreport rreport) 
-            throws SAXException, Exception{
+            throws SAXException,
+                   NullNotAllowedException, 
+                   JAXBException, 
+                   RRPropertiesException, 
+                   ParseException, 
+                   MalformedURLException, 
+                   DataSourceException{
         return super.parse(rreport);
     }
     

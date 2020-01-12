@@ -32,6 +32,12 @@ public class RRDsFileJson extends ARRDsJRDataSource {
 
     private File file;
 
+    public RRDsFileJson() {
+        super();
+    }
+
+    
+    
     /**
      * Get the json file
      * 

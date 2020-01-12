@@ -25,38 +25,32 @@ import rebelo.reports.core.NullNotAllowedException;
  *
  * @author João Rebelo
  */
-public abstract class ARRDsHttps extends ARRDsHttp{
+public abstract class ARRDsHttps extends ARRDsHttp {
+
+    public ARRDsHttps() {
+        super();
+    }
     
     /**
-     * The Http
-     */
-    private HttpsURLConnection conn;
-
-    /**
      * Get the Https connection
-     * @return 
-     * @throws rebelo.reports.core.datasource.DataSourceException 
-     * @throws java.io.IOException 
-     * @throws rebelo.reports.core.NullNotAllowedException 
+     *
+     * @return
+     * @throws rebelo.reports.core.datasource.DataSourceException
+     * @throws java.io.IOException
+     * @throws rebelo.reports.core.NullNotAllowedException
      */
     @Override
     @NotNull
-    public HttpsURLConnection getUrlConnection() throws DataSourceException, IOException, NullNotAllowedException{
-        if(url == null){
+    public HttpsURLConnection getUrlConnection() throws DataSourceException, IOException, NullNotAllowedException {
+        if (url == null) {
             throw new DataSourceException("Url for connection is not initialized or seted");
         }
-        if(conn == null){
-            conn = (HttpsURLConnection)url.openConnection();
-            setGeneric(conn);
-        }
+
+        HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+        setGeneric(conn);
+
         LOG.trace("Geting Url Connection (getUrlConnection)");
         return conn;
     }
-
-    
-    
-    
-    
-    
 
 }

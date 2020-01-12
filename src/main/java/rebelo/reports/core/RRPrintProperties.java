@@ -25,6 +25,8 @@ import javax.print.attribute.PrintServiceAttributeSet;
 import net.sf.jasperreports.export.SimplePrintServiceExporterConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import static rebelo.reports.core.Report.logLevel;
 
 /**
  *
@@ -65,6 +67,9 @@ public class RRPrintProperties {
      * 
      */
     public RRPrintProperties() {
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         this.printRequestAttributeSet = new HashPrintRequestAttributeSet();
         this.printServiceAttributeSet = new HashPrintServiceAttributeSet();
         this.simPrintExpConf.setPrintRequestAttributeSet(printRequestAttributeSet);

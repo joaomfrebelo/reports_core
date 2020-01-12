@@ -14,24 +14,31 @@
  * You should have received a copy of the GNU Affero General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package rebelo.reports.core.parse;
+package rebelo.reports.core;
 
 /**
  *
  * @author João Rebelo
  */
-public class ParseException extends Exception{
+public class RRException extends Exception{
 
-    public ParseException(String message) {
+    public RRException() {
+    }
+
+    public RRException(String message) {
         super(message);
     }
 
-    public ParseException(Throwable cause) {
+    public RRException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public RRException(Throwable cause) {
         super(cause);
     }
 
-    public ParseException(String message, Throwable cause) {
-        super(message, cause);
+    public RRException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
     }
     
 }

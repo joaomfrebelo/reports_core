@@ -21,6 +21,8 @@ import net.sf.jasperreports.export.SimpleJsonExporterConfiguration;
 import net.sf.jasperreports.export.SimpleJsonExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -55,7 +57,10 @@ public class RRJsonProperties{
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public RRJsonProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
+    public RRJsonProperties(@NotNull RRProperties prop) throws NullNotAllowedException {        
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         LOG.debug("Start instance 'RRJsonProperties'");
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "RRJsonProperties");

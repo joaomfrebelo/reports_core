@@ -20,6 +20,7 @@ import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.standard.OrientationRequested;
@@ -38,6 +39,8 @@ import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.datasource.ARRDsJRDataSource;
 import rebelo.reports.core.datasource.DataSourceException;
 import rebelo.reports.core.datasource.IRRDsProperties;
@@ -49,6 +52,18 @@ import rebelo.reports.core.datasource.RRDsDatabase;
  * @author João Rebelo
  */
 public class Report {
+
+    /**
+     * The log level
+     */
+    public static Level logLevel = null;
+    
+    /**
+     * The report index parameter name to passed to the jasperreport.
+     * <br>
+     * the index is the number of the report
+     */
+    public static final String RR_INDEX_PARAMETER = "RR_INDEX_PARAMETER";
 
     /**
      * Date of starting Report generation
@@ -66,15 +81,18 @@ public class Report {
     protected static final Logger LOG = LogManager.getLogger();
 
     /**
-     * Report engine Do not access directly to this propertie, use teh
+     * Report engine Do not access directly to this propertie, use the
      * getJaspertPrint method
      */
-    private JasperPrint jasperPrint;
+    private ArrayList<JasperPrint> jasperPrint;
 
     /**
      * The class that generates the jasper report
      */
     public Report() {
+        if(null != logLevel){
+            Configurator.setLevel(getClass().getName(), logLevel);
+        }
         LOG.debug("Instance initiated");
     }
 
@@ -85,7 +103,7 @@ public class Report {
      * @throws rebelo.reports.core.NullNotAllowedException
      */
     public Report(@NotNull RRProperties prop) throws NullNotAllowedException {
-        LOG.debug("Instance initiated");
+        this();
         setProperties(prop);
     }
 
@@ -126,20 +144,18 @@ public class Report {
     /**
      *
      * Set the JasperPrint engine.Whene o getJasperPrint or generate the report
- if the not seted it will be setted automataclly. However the RRProperties
- parameters, jasper file and driver properies must be seted or will throw
- a exception, because JasperPrint can not be instanciated without this
- parameters.
-
- This method is only if you wont to define your one instance for any
- reazon
-
- This will be set automatically
+     * if the not seted it will be setted automataclly. However the RRProperties
+     * parameters, jasper file and driver properies must be seted or will throw
+     * a exception, because JasperPrint can not be instanciated without this
+     * parameters.
+     *
+     * This method is only if you wont to define your one instance for any
+     * reazon This will be set automatically
      *
      * @param jasperPrint
      * @throws rebelo.reports.core.NullNotAllowedException
      */
-    public void setJasperPrint(@NotNull JasperPrint jasperPrint) throws NullNotAllowedException {
+    public void setJasperPrint(@NotNull ArrayList<JasperPrint> jasperPrint) throws NullNotAllowedException {
         if (jasperPrint == null) {
             String msg = String.format(Message.GET_NULL_ERROR, "jasperPrint");
             LOG.warn(msg);
@@ -151,39 +167,54 @@ public class Report {
     /**
      * Get the JasperReport engine
      *
-     * Whene o getJasperPrint or you generate the report if the not seted it
-     * will be setted automataclly.However the RRProperties parameters, jasper
-     * file and driver properies must be seted or will throw a exception,
-     * because JasperPrint can not be instanciated without this parameters.This
-     * method exist to be possible to manipulate the JasperPrint before the
-     * generation of the report
+     * When o getJasperPrint or you generate the report if the not seted it will
+     * be setted automataclly.However the RRProperties parameters, jasper file
+     * and driver properies must be seted or will throw a exception, because
+     * JasperPrint can not be instanciated without this parameters.This method
+     * exist to be possible to manipulate the JasperPrint before the generation
+     * of the report
      *
      * @return
      * @throws rebelo.reports.core.datasource.DataSourceException
      * @throws net.sf.jasperreports.engine.JRException
      * @throws rebelo.reports.core.NullNotAllowedException
-     * @throws Exception
+     * @throws rebelo.reports.core.RRException
      */
     @NotNull
-    public JasperPrint getJasperPrint()
-            throws DataSourceException, JRException, NullNotAllowedException, Exception {
+    public ArrayList<JasperPrint> getJasperPrint()
+            throws DataSourceException, JRException, NullNotAllowedException, RRException {
 
         if (jasperPrint == null) {
+            jasperPrint = new ArrayList<>();
             IRRDsProperties dsProp = prop.getDataSourceProperties();
 
-            LOG.debug("Create JasperPrint");
-            if (dsProp instanceof RRDsDatabase) {
-                jasperPrint = JasperFillManager.fillReport(prop.getJasperFile(),
-                        prop.getParameters(),
-                        ((RRDsDatabase) dsProp).getDataSource()
-                );
-            }else if(dsProp instanceof ARRDsJRDataSource){
-                jasperPrint = JasperFillManager.fillReport(prop.getJasperFile(),
-                        prop.getParameters(),
-                        ((ARRDsJRDataSource)dsProp).getDataSource()
-                );
-            }else{
-                throw new Exception("Unknown datasource type to pass as argument to JasperFillManager.fillReport");
+            for (int index = 1; index <= prop.getCopies(); index++) {
+
+                LOG.debug("Create JasperPrint index '"
+                        + new StringBuilder().append(index).toString()
+                        + "'");
+
+                prop.getParameters().put(RR_INDEX_PARAMETER, index);
+
+                if (dsProp instanceof RRDsDatabase) {
+                    jasperPrint.add(
+                            JasperFillManager.fillReport(
+                                    prop.getJasperFile(),
+                                    prop.getParameters(),
+                                    ((RRDsDatabase) dsProp).getDataSource()
+                            )
+                    );
+                } else if (dsProp instanceof ARRDsJRDataSource) {
+                    jasperPrint.add(
+                            JasperFillManager.fillReport(
+                                    prop.getJasperFile(),
+                                    prop.getParameters(),
+                                    ((ARRDsJRDataSource) dsProp).getDataSource()
+                            )
+                    );
+                } else {
+                    throw new RRException("Unknown datasource type to pass as argument to JasperFillManager.fillReport");
+                }
             }
         }
         return jasperPrint;
@@ -199,7 +230,10 @@ public class Report {
      * @throws SQLException
      * @throws IllegalAccessException
      * @throws JRException
-     * @throws Exception
+     * @throws RRException
+     * @throws rebelo.reports.core.datasource.DataSourceException
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws rebelo.reports.core.PrinterNotFoundException
      */
     @NotNull
     public net.sf.jasperreports.export.Exporter getExporter() throws
@@ -209,18 +243,24 @@ public class Report {
             SQLException,
             IllegalAccessException,
             JRException,
-            Exception {
+            RRException,
+            DataSourceException,
+            RRPropertiesException,
+            PrinterNotFoundException {
 
         LOG.debug("Start generate report");
 
         net.sf.jasperreports.export.Exporter exporter;
+
+        SimpleExporterInput simpleExporterInput
+                = SimpleExporterInput.getInstance(this.getJasperPrint());
 
         switch (prop.getType()) {
             case pdf:
                 LOG.trace("Start export PDF report");
                 RRPdfProperties pdfProp = (RRPdfProperties) prop.getTypeProperties();
                 exporter = new JRPdfExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(pdfProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(pdfProp.getSimplePdfExporterConfiguration());
                 break;
@@ -228,7 +268,7 @@ public class Report {
                 LOG.trace("Start export HTML report");
                 RRHtmlProperties htmlProp = (RRHtmlProperties) prop.getTypeProperties();
                 exporter = new HtmlExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(htmlProp.getSimpleHtmlExporterOutput());
                 exporter.setConfiguration(htmlProp.getSimpleHtmlExporterConfiguration());
                 break;
@@ -236,7 +276,7 @@ public class Report {
                 LOG.trace("Start export CSV report");
                 RRCsvProperties csvProp = (RRCsvProperties) prop.getTypeProperties();
                 exporter = new JRCsvExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(csvProp.getSimpleWriterExporterOutput());
                 exporter.setConfiguration(csvProp.getSimpleCsvReportConfiguration());
                 break;
@@ -244,7 +284,7 @@ public class Report {
                 LOG.trace("Start export XLS report");
                 exporter = new JRXlsExporter();
                 RRXlsProperties xlsProp = (RRXlsProperties) prop.getTypeProperties();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(xlsProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(xlsProp.getSimpleXlsReportConfiguration());
                 break;
@@ -252,7 +292,7 @@ public class Report {
                 LOG.trace("Start export XML report");
                 RRXmlProperties xmlProp = (RRXmlProperties) prop.getTypeProperties();
                 exporter = new JRXmlExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(xmlProp.getSimpleXmlExporterOutput());
                 exporter.setConfiguration(xmlProp.getSimpleReportExportConfiguration());
                 break;
@@ -260,7 +300,7 @@ public class Report {
                 LOG.trace("Start export RTF report");
                 RRRtfProperties rtfProp = (RRRtfProperties) prop.getTypeProperties();
                 exporter = new JRRtfExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(rtfProp.getSimpleWriterExporterOutput());
                 exporter.setConfiguration(rtfProp.getSimpleRtfExporterConfiguration());
                 break;
@@ -268,7 +308,7 @@ public class Report {
                 LOG.trace("Start export TEXT report");
                 RRTextProperties txtProp = (RRTextProperties) prop.getTypeProperties();
                 exporter = new JRTextExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(txtProp.getSimpleWriterExporterOutput());
                 exporter.setConfiguration(txtProp.getSimpleTextExporterConfiguration());
                 break;
@@ -276,7 +316,7 @@ public class Report {
                 LOG.trace("Start export PPTX report");
                 RRPptxProperties pptxProp = (RRPptxProperties) prop.getTypeProperties();
                 exporter = new JRPptxExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(pptxProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(new SimplePptxReportConfiguration());
                 break;
@@ -284,7 +324,7 @@ public class Report {
                 LOG.trace("Start export xlsx report");
                 RRXlsxProperties xlsxProp = (RRXlsxProperties) prop.getTypeProperties();
                 exporter = new JRXlsxExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(xlsxProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(xlsxProp.getSimpleXlsxExporterConfiguration());
                 break;
@@ -292,7 +332,7 @@ public class Report {
                 LOG.trace("Start export docx report");
                 RRDocxProperties docxProp = (RRDocxProperties) prop.getTypeProperties();
                 exporter = new JRDocxExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(docxProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(docxProp.getSimpleDocxExporterConfiguration());
                 break;
@@ -300,7 +340,7 @@ public class Report {
                 LOG.trace("Start export ods report");
                 RROdsProperties odsProp = (RROdsProperties) prop.getTypeProperties();
                 exporter = new JROdsExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(odsProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(odsProp.getSimpleOdsExporterConfiguration());
                 break;
@@ -308,7 +348,7 @@ public class Report {
                 LOG.trace("Start export odt report");
                 RROdtProperties odtProp = (RROdtProperties) prop.getTypeProperties();
                 exporter = new JROdtExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(odtProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(odtProp.getSimpleOdtExporterConfiguration());
                 break;
@@ -316,15 +356,16 @@ public class Report {
                 LOG.trace("Start export json report");
                 RRJsonProperties jsonProp = (RRJsonProperties) prop.getTypeProperties();
                 exporter = new JsonExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
+                exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(jsonProp.getSimpleJsonExporterOutput());
                 exporter.setConfiguration(jsonProp.getSimpleJsonExporterConfiguration());
                 break;
             case print:
                 RRPrintProperties prtProp = (RRPrintProperties) prop.getTypeProperties();
                 exporter = new JRPrintServiceExporter();
-                exporter.setExporterInput(new SimpleExporterInput(this.getJasperPrint()));
-                if (jasperPrint.getOrientationValue() == net.sf.jasperreports.engine.type.OrientationEnum.LANDSCAPE) {
+                exporter.setExporterInput(simpleExporterInput);
+
+                if (jasperPrint.get(0).getOrientationValue() == net.sf.jasperreports.engine.type.OrientationEnum.LANDSCAPE) {
                     prtProp.getPrintRequestAttributeSet().add(OrientationRequested.LANDSCAPE);
                 } else {
                     prtProp.getPrintRequestAttributeSet().add(OrientationRequested.PORTRAIT);
@@ -352,10 +393,10 @@ public class Report {
                 throw new PrinterNotFoundException("Printer " + prtProp.getSelectedPrinter() + " not found");
             //break;
             default:
-                throw new Exception("Unuported report type "
+                throw new RRException("Unuported report type "
                         .concat(prop.getType().toString()));
         }
-        
+
         return exporter;
     }
 
@@ -369,7 +410,10 @@ public class Report {
      * @throws SQLException
      * @throws IllegalAccessException
      * @throws JRException
-     * @throws Exception
+     * @throws rebelo.reports.core.datasource.DataSourceException
+     * @throws rebelo.reports.core.RRException
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws rebelo.reports.core.PrinterNotFoundException
      */
     public void exportReport() throws
             NullNotAllowedException,
@@ -378,9 +422,14 @@ public class Report {
             SQLException,
             IllegalAccessException,
             JRException,
-            Exception {
+            DataSourceException,
+            RRException,
+            RRPropertiesException,
+            PrinterNotFoundException
+             {
         this.getExporter().exportReport();
-        LOG.debug("End of export report, executed in {} miliseconds", () -> ChronoUnit.MILLIS.between(start, LocalDateTime.now()));
+        LOG.debug("End of export report, executed in {} miliseconds", 
+                () -> ChronoUnit.MILLIS.between(start, LocalDateTime.now()));
     }
 
 }

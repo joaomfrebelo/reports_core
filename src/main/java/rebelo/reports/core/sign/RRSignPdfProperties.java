@@ -21,8 +21,9 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.eclipse.persistence.annotations.Noncacheable;
+import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.NullNotAllowedException;
+import rebelo.reports.core.Report;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -117,6 +118,9 @@ public class RRSignPdfProperties {
      * The properties to sign the pdf
      */
     public RRSignPdfProperties() {
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         LOG.debug(() -> "instance created");
     }
 

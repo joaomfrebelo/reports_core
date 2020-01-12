@@ -21,7 +21,8 @@ import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
 import net.sf.jasperreports.export.SimpleHtmlExporterConfiguration;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static rebelo.reports.core.ARRPropSWEO.LOG;
+import org.apache.logging.log4j.core.config.Configurator;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -53,7 +54,10 @@ public class RRHtmlProperties {
      * @param prop 
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
-    public RRHtmlProperties(@NotNull RRProperties prop) throws NullNotAllowedException{
+    public RRHtmlProperties(@NotNull RRProperties prop) throws NullNotAllowedException{        
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         LOG.debug("Starting instance 'RRHtmlProperties'");
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "RRHtmlProperties");

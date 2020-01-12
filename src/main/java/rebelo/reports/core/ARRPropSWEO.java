@@ -20,7 +20,8 @@ import javax.validation.constraints.NotNull;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static rebelo.reports.core.ARRPropSOSEO.LOG;
+import org.apache.logging.log4j.core.config.Configurator;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -51,7 +52,10 @@ public abstract class ARRPropSWEO {
      * @param prop
      * @throws NullNotAllowedException 
      */
-    public ARRPropSWEO(@NotNull RRProperties prop) throws NullNotAllowedException{
+    public ARRPropSWEO(@NotNull RRProperties prop) throws NullNotAllowedException{        
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "ARRPropSWEO");
             LOG.error(msg);

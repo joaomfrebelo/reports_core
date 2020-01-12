@@ -22,6 +22,30 @@ Rebelo Reports Core is the core of the Rebelo Reports is not intende
     Linux tests
     
 
+## To include in your project
+
+Use the Jitpack
+
+https://jitpack.io/#joaomfrebelo/reports_core
+
+For maven prjects
+
+Include in the repositories section of your pom file:
+
+	<repository>
+	    <id>jitpack.io</id>
+	    <url>https://jitpack.io</url>
+	</repository>
+
+In the dependecies of your pom file
+
+    <dependency>
+	    <groupId>com.github.joaomfrebelo</groupId>
+	    <artifactId>reports_core</artifactId>
+	    <version>Tag of version</version>
+	</dependency>
+
+
 ## License
 
 Copyright (C) 2019  João M F Rebelo

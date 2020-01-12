@@ -22,6 +22,8 @@ import java.util.HashMap;
 import javax.validation.constraints.Null;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 import rebelo.reports.core.datasource.IRRDsProperties;
 
@@ -68,6 +70,11 @@ public class RRProperties {
     private String jasperFile;
 
     /**
+     * The neunber of copies that must be generated of this report
+     */
+    private int copies = 1;
+
+    /**
      * The file name to write the report without extension. The extension will
      * be add by the format Ex: if you wont a file output called like report.pdf
      * set this variable to report
@@ -96,6 +103,9 @@ public class RRProperties {
     private rebelo.reports.core.datasource.IRRDsProperties dsProp;
 
     public RRProperties() {
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         LOG.debug(() -> "instance created");
         encoding = "UTF-8";
     }
@@ -161,6 +171,34 @@ public class RRProperties {
     }
 
     /**
+     * Get the number of copis
+     * @return will return null if not seted
+     */
+    @NotNull
+    public int getCopies() {
+        return copies;
+    }
+
+    /**
+     * 
+     * Set the nunber or copies of the report
+     * 
+     * @param copies
+     * @throws RRPropertiesException
+     * @throws NullNotAllowedException 
+     */
+    public void setCopies(@NotNull int copies) throws RRPropertiesException, NullNotAllowedException {
+        if(copies < 1){
+            LOG.error(()-> "Number of copies can not be less than 1");
+            throw new RRPropertiesException(encoding);
+        } 
+        this.copies = copies;
+        LOG.trace(() -> String.format(
+                Message.SETTED_VALUE, "copies", new StringBuilder().append(this.copies).toString())
+        );
+    }
+
+    /**
      * Get output file path
      *
      * @return
@@ -197,7 +235,7 @@ public class RRProperties {
                 out.getParentFile().mkdir();
                 LOG.trace(() -> String.format(Message.SETTED_VALUE, "directory outputFile created", outputFile));
             }
-        }else{
+        } else {
             LOG.error("Outpufile path parente is not a directory");
             throw new RRPropertiesException("Outpufile path parente is not a directory");
         }
@@ -301,10 +339,11 @@ public class RRProperties {
      * (RRPdfProperties)getTypeProperties();
      *
      * @return
-     * @throws java.lang.Exception
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws rebelo.reports.core.NullNotAllowedException
      */
     @NotNull
-    public Object getTypeProperties() throws Exception {
+    public Object getTypeProperties() throws RRPropertiesException, NullNotAllowedException {
         if (typePropertie == null) {
             switch (type) {
                 case pdf:
@@ -350,7 +389,7 @@ public class RRProperties {
                     typePropertie = new RRPrintProperties();
                     break;
                 default:
-                    throw new Exception("Unknow type in RRPropertis getTypeProperties");
+                    throw new RRPropertiesException("Unknow type in RRPropertis getTypeProperties");
             }
         }
         return typePropertie;

@@ -28,7 +28,6 @@ import java.security.NoSuchAlgorithmException;
 import java.security.UnrecoverableKeyException;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import javax.print.attribute.standard.Copies;
 import javax.print.attribute.standard.MediaSizeName;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -180,6 +179,7 @@ public class ReportTest {
                     String propFilePath = dbprop.getProperty("filepath", null);
                     String propUrl = dbprop.getProperty("url", null);
                     String propType = dbprop.getProperty("type", null);
+                    String propCopies = dbprop.getProperty("copies", "1");
 
                     ArrayList<RRProperties.Types> testType = new ArrayList<>();
                     String[] spTypes = dbprop.getProperty("types").split(",");
@@ -276,6 +276,7 @@ public class ReportTest {
                             }
 
                             RRProperties prop = new RRProperties();
+                            prop.setCopies(Integer.parseInt(propCopies));
                             prop.setType(type);
                             prop.setJasperFile(report.getAbsolutePath());
                             prop.setDataSourceProperties(dsProp); //(IRRDsProperties)dsProp
@@ -308,7 +309,10 @@ public class ReportTest {
                                 //prt.setSelectedPrinter("HP Photosmart C4500 series");
                                 // No print selection will print to default printer
                                 prt.getPrintRequestAttributeSet().add(MediaSizeName.ISO_A4);
-                                prt.getPrintRequestAttributeSet().add(new Copies(2));
+                                // Example of printig two copies
+                                // If you add copies like this this the paramter RR_INDEX_PARAMETER will be 1 for tha two copies
+                                // If yoi need to know teh RR_INDEX_PARAMETER the correct way is ser the copies propertie
+                                // prt.getPrintRequestAttributeSet().add(new Copies(2));
                             }
 
                             Report rep = new Report(prop);

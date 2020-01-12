@@ -33,12 +33,15 @@ import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import org.jfree.util.Log;
 import org.xml.sax.SAXException;
 import rebelo.reports.core.NullNotAllowedException;
 import rebelo.reports.core.RRPdfProperties;
 import rebelo.reports.core.RRPrintProperties;
 import rebelo.reports.core.RRProperties;
+import rebelo.reports.core.RRPropertiesException;
+import rebelo.reports.core.Report;
 import rebelo.reports.core.common.Message;
 import rebelo.reports.core.common.StringUtils;
 import rebelo.reports.core.common.Util;
@@ -79,21 +82,23 @@ public abstract class AParse {
      * Jaster report file base dir. The base dir for the jasper report file if
      * not null it will be preppend
      */
-    public String jasperFileBaseDir = null;
+    protected String jasperFileBaseDir = null;
 
     /**
      * KeyStore base dir. The base dir for the Keystore used to sign the pdf if
      * not null it will be preppend
      */
-    public String keyStoreBaseDir = null;
+    protected String keyStoreBaseDir = null;
 
     /**
      * The XSD version that the parses parse
      */
-    public static final String XSD_VERSION = "1.0";
+    public static final String XSD_VERSION = "1.1";
 
     public AParse() {
-
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
     }
 
     /**
@@ -206,29 +211,37 @@ public abstract class AParse {
      * @throws JAXBException
      * @throws SAXException
      * @throws NullNotAllowedException
-     * @throws Exception
+     * @throws rebelo.reports.core.parse.ParseException
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws java.net.MalformedURLException
+     * @throws rebelo.reports.core.datasource.DataSourceException
+     * @throws java.text.ParseException
      */
     @NotNull
     public RRProperties parse(@NotNull File file) throws
             JAXBException,
             SAXException,
             NullNotAllowedException,
-            Exception {
+            ParseException,
+            RRPropertiesException,
+            MalformedURLException,
+            DataSourceException,
+            java.text.ParseException {
 
         Rreport rreport = this.unmarshaller(file);
         return parse(rreport);
     }
-    
+
     /**
-     * 
+     *
      * Parse a xml string
-     * 
+     *
      * @param strXml
      * @return
      * @throws JAXBException
      * @throws SAXException
      * @throws NullNotAllowedException
-     * @throws Exception 
+     * @throws Exception
      */
     @NotNull
     public RRProperties parse(@NotNull String strXml) throws
@@ -240,17 +253,17 @@ public abstract class AParse {
         Rreport rreport = this.unmarshaller(strXml);
         return parse(rreport);
     }
-    
+
     /**
-     * 
+     *
      * Parse a xml get over a URL
-     * 
+     *
      * @param url
      * @return
      * @throws JAXBException
      * @throws SAXException
      * @throws NullNotAllowedException
-     * @throws Exception 
+     * @throws Exception
      */
     @NotNull
     public RRProperties parse(@NotNull URL url) throws
@@ -262,36 +275,42 @@ public abstract class AParse {
         Rreport rreport = this.unmarshaller(url);
         return parse(rreport);
     }
-    
+
     /**
-     * 
+     *
      * Parse the Rreport (rebelo.reports.core.prase.pojo)
-     * 
+     *
      * @param rreport
      * @return
      * @throws JAXBException
      * @throws SAXException
      * @throws NullNotAllowedException
-     * @throws Exception 
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws rebelo.reports.core.parse.ParseException
+     * @throws java.net.MalformedURLException
+     * @throws rebelo.reports.core.datasource.DataSourceException
      */
     @NotNull
-    protected RRProperties parse(@NotNull Rreport rreport) 
+    protected RRProperties parse(@NotNull Rreport rreport)
             throws JAXBException,
             SAXException,
             NullNotAllowedException,
-            Exception{
+            RRPropertiesException,
+            ParseException,
+            MalformedURLException,
+            DataSourceException {
         LOG.trace(() -> "startig parseReport");
-        
+
         RRProperties prop = new RRProperties();
-                
+
         this.parseReportType(prop, rreport.getReporttype());
 
         LOG.trace(() -> "startig populate RRProperties");
 
         prop.setJasperFile(
                 this.getJasperFileBaseDir() == null
-                ? rreport.getJasperfile()
-                : this.getJasperFileBaseDir() + rreport.getJasperfile()
+                ? rreport.getJasperfile().getValue()
+                : this.getJasperFileBaseDir() + rreport.getJasperfile().getValue()
         );
         LOG.debug(() -> {
             try {
@@ -300,6 +319,16 @@ public abstract class AParse {
                 return ex.getMessage();
             }
         });
+
+        if (rreport.getJasperfile().getCopies() == null) {
+            LOG.debug(() -> "Copies in report xml file was 'null', seted to 1 copie");
+            prop.setCopies(1);
+        } else {
+            LOG.debug(() -> "Copies in report xml file seted to "
+                    + rreport.getJasperfile().getCopies().toString()
+                    + " copies");
+            prop.setCopies(rreport.getJasperfile().getCopies().intValue());
+        }
 
         this.parseReportType(prop, rreport.getReporttype());
         LOG.debug(() -> "ReportType parsed");
@@ -312,18 +341,23 @@ public abstract class AParse {
 
         return prop;
     }
-    
-    
+
     /**
      *
      * @param file
      * @return
      * @throws JAXBException
      * @throws SAXException
-     * @throws Exception
+     * @throws rebelo.reports.core.parse.ParseException
+     * @throws rebelo.reports.core.NullNotAllowedException
      */
     @NotNull
-    public Rreport unmarshaller(@NotNull File file) throws JAXBException, SAXException, Exception {
+    public Rreport unmarshaller(@NotNull File file)
+            throws
+            JAXBException,
+            SAXException,
+            ParseException,
+            NullNotAllowedException {
 
         LOG.trace(() -> "checking file to be unmarshaller");
 
@@ -335,12 +369,12 @@ public abstract class AParse {
 
         if (file.isFile() == false) {
             Log.error("'" + file.getAbsolutePath() + "'" + " is not a file");
-            throw new Exception("'" + file.getAbsolutePath() + "'" + " is not a file");
+            throw new ParseException("'" + file.getAbsolutePath() + "'" + " is not a file");
         }
 
         if (file.canRead() == false) {
             Log.error("'" + file.getAbsolutePath() + "'" + " is not readable");
-            throw new Exception("'" + file.getAbsolutePath() + "'" + " is not readable");
+            throw new ParseException("'" + file.getAbsolutePath() + "'" + " is not readable");
         }
 
         LOG.debug(() -> "Init parse");
@@ -362,7 +396,8 @@ public abstract class AParse {
      * @throws JAXBException
      */
     @NotNull
-    public Rreport unmarshaller(@NotNull String str) throws SAXException, NullNotAllowedException, JAXBException {
+    public Rreport unmarshaller(@NotNull String str)
+            throws SAXException, NullNotAllowedException, JAXBException {
         LOG.trace(() -> "Init unmarshaller string ");
         LOG.info(() -> "XML string => " + str);
         if (str == null) {
@@ -418,22 +453,29 @@ public abstract class AParse {
     @NotNull
     public Unmarshaller unmarshallInstance() throws SAXException, JAXBException {
         LOG.trace(() -> "Create unmarshallInstance");
-        ClassLoader classLoader = getClass().getClassLoader();
         LOG.trace(() -> "Read xsd file");
-        File xsd = new File(
-                classLoader.getResource(
-                        "./schema_" + XSD_VERSION.replace(".", "_") + ".xsd")
-                        .getFile()
-        );
 
-        LOG.debug(() -> "Seting xsd shema file'" + xsd.getAbsolutePath() + "'");
-        SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = sf.newSchema(xsd);
-        LOG.trace(() -> "Schema seted");
+        ClassLoader classLoader = getClass().getClassLoader();
+        URL xsdUrl = classLoader.getResource(
+                "./schema_" + XSD_VERSION.replace(".", "_") + ".xsd");
+                
         LOG.trace(() -> "Creating JAXBContext.newInstance ");
         JAXBContext jaxbContext = JAXBContext.newInstance(Rreport.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        unmarshaller.setSchema(schema);
+        
+        if (xsdUrl == null) {
+            LOG.warn(() -> "Schema not seted please put the schema file ('schema_"
+                    + XSD_VERSION.replace(".", "_")
+                    + ".xsd' in the same folder as your java file");
+        } else {
+            File xsd = new File(xsdUrl.getFile());
+            LOG.debug(() -> "Seting xsd shema file'" + xsd.getAbsolutePath() + "'");
+            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+            Schema schema = sf.newSchema(xsd);
+            unmarshaller.setSchema(schema);
+            LOG.trace(() -> "Schema seted");
+        }
+
         return unmarshaller;
     }
 
@@ -444,10 +486,11 @@ public abstract class AParse {
      * @param prop
      * @param repType
      * @throws NullNotAllowedException
-     * @throws Exception
+     * @throws rebelo.reports.core.RRPropertiesException
+     * @throws rebelo.reports.core.parse.ParseException
      */
     protected void parseReportType(@NotNull RRProperties prop, @NotNull Rreport.Reporttype repType)
-            throws NullNotAllowedException, Exception {
+            throws NullNotAllowedException, RRPropertiesException, ParseException {
 
         LOG.trace("Init parseReportType method");
 
@@ -558,11 +601,11 @@ public abstract class AParse {
      * @param pdfProp
      * @param sign
      * @throws NullNotAllowedException
-     * @throws Exception
+     * @throws RRPropertiesException
      */
     @SuppressWarnings("null")
     protected void parseSign(RRPdfProperties pdfProp, Sign sign)
-            throws NullNotAllowedException, Exception {
+            throws NullNotAllowedException, RRPropertiesException {
 
         LOG.trace("Init parseSign method");
 
@@ -580,16 +623,21 @@ public abstract class AParse {
         LOG.trace("Parsing sign");
         RRSignPdfProperties signProp = new RRSignPdfProperties();
         signProp.setJavaKeyStorePath(
-                this.getKeyStoreBaseDir() == null ?
-                sign.getKeystore().getPath() :
-                this.getKeyStoreBaseDir() + sign.getKeystore().getPath()
+                this.getKeyStoreBaseDir() == null
+                ? sign.getKeystore().getPath()
+                : this.getKeyStoreBaseDir() + sign.getKeystore().getPath()
         );
         signProp.setJavaKeyStorePassword(sign.getKeystore().getPassword());
         signProp.setCertificateName(sign.getKeystore().getCertificate().getName());
         signProp.setCertificatePassword(sign.getKeystore().getCertificate().getPassword());
         signProp.setLevel(RRSignPdfProperties.Level.valueOf(sign.getLevel().toUpperCase()));
         signProp.setType(RRSignPdfProperties.Type.valueOf(sign.getType().toUpperCase()));
-        signProp.isVisible(Util.parseBool(sign.getRectangle().getVisible()));
+
+        try {
+            signProp.isVisible(Util.parseBool(sign.getRectangle().getVisible()));
+        } catch (Exception e) {
+            throw new RRPropertiesException(e.getMessage());
+        }
 
         if (signProp.isVisible()) {
             Float x = Float.valueOf(sign.getRectangle().getPosition().getX().toString());
@@ -622,11 +670,10 @@ public abstract class AParse {
      * @param parameters
      * @throws NullNotAllowedException
      * @throws ParseException
-     * @throws Exception
      */
     protected void parseParameters(@NotNull RRProperties prop,
             @NotNull Rreport.Parameters parameters)
-            throws NullNotAllowedException, ParseException, Exception {
+            throws NullNotAllowedException, ParseException, ParseException {
 
         LOG.trace("Init parseParameters method");
 
@@ -660,7 +707,11 @@ public abstract class AParse {
                     break;
                 case "bool":
                 case "boolean":
-                    prop.addParameter(name, Util.parseBool(value));
+                    try {
+                        prop.addParameter(name, Util.parseBool(value));
+                    } catch (Exception e) {
+                        throw new ParseException(e.getMessage());
+                    }
                     break;
                 case "double":
                     prop.addParameter(name, Double.valueOf(value));
@@ -682,10 +733,14 @@ public abstract class AParse {
                     break;
                 case "date":
                     SimpleDateFormat sdf = new SimpleDateFormat(param.getValue().getFormat());
-                    prop.addParameter(name, sdf.parse(value));
+                    try {
+                        prop.addParameter(name, sdf.parse(value));
+                    } catch (java.text.ParseException e) {
+                        throw new ParseException(e);
+                    }
                     break;
                 case "time":
-                    throw new Exception("Not implemented");
+                    throw new ParseException("Not implemented");
 //                    break;
                 case "sqltime":
                     prop.addParameter(name, new java.sql.Time(Integer.valueOf(value)));

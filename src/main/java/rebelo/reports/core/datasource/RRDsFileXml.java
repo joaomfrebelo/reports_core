@@ -32,6 +32,10 @@ public class RRDsFileXml extends ARRDsJRDataSource {
 
     private File file;
 
+    public RRDsFileXml() {
+        super();
+    }
+    
     /**
      * Get the XML file
      *

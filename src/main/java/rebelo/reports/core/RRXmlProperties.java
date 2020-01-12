@@ -21,7 +21,8 @@ import net.sf.jasperreports.export.SimpleReportExportConfiguration;
 import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import static rebelo.reports.core.RRProperties.LOG;
+import org.apache.logging.log4j.core.config.Configurator;
+import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -56,6 +57,9 @@ public class RRXmlProperties {
      * @throws NullNotAllowedException 
      */
     public RRXmlProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         LOG.debug("Starting instance 'RRXmlProperties'");
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "RRXmlProperties");

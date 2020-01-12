@@ -26,6 +26,10 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
  */
 public class RRDsHttpJson extends ARRDsHttp {
 
+    public RRDsHttpJson() {
+        super();
+    }
+
     /**
      * Get the JsonDataSource
      * 

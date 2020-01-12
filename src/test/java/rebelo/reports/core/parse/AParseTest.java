@@ -23,6 +23,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import org.apache.logging.log4j.Level;
@@ -40,6 +41,7 @@ import org.junit.runners.MethodSorters;
 import rebelo.reports.core.NullNotAllowedException;
 import rebelo.reports.core.RRPdfProperties;
 import rebelo.reports.core.RRProperties;
+import rebelo.reports.core.RRPropertiesException;
 import rebelo.reports.core.datasource.DataSourceException;
 import rebelo.reports.core.datasource.RRDsDatabase;
 import rebelo.reports.core.parse.pojo.Rreport;
@@ -69,17 +71,17 @@ public class AParseTest {
         }
 
         @Override
-        protected void parseParameters(RRProperties prop, Rreport.Parameters parameters) throws NullNotAllowedException, ParseException, Exception {
-            super.parseParameters(prop, parameters);
+        protected void parseParameters(RRProperties prop, Rreport.Parameters parameters) throws NullNotAllowedException, rebelo.reports.core.parse.ParseException, rebelo.reports.core.parse.ParseException {
+            super.parseParameters(prop, parameters); 
         }
-
+        
         @Override
-        protected void parseSign(RRPdfProperties pdfProp, Sign sign) throws NullNotAllowedException, Exception {
+        protected void parseSign(RRPdfProperties pdfProp, Sign sign) throws NullNotAllowedException, RRPropertiesException {
             super.parseSign(pdfProp, sign);
         }
 
         @Override
-        protected void parseReportType(RRProperties prop, Rreport.Reporttype repType) throws NullNotAllowedException, Exception {
+        protected void parseReportType(RRProperties prop, Rreport.Reporttype repType) throws NullNotAllowedException, RRPropertiesException, rebelo.reports.core.parse.ParseException {
             super.parseReportType(prop, repType);
         }
 

@@ -33,7 +33,9 @@ import com.itextpdf.text.pdf.PdfSignatureAppearance;
 import javax.validation.constraints.NotNull;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.NullNotAllowedException;
+import rebelo.reports.core.Report;
 
 /**
  *
@@ -70,6 +72,9 @@ public class RRSignPdf {
     public RRSignPdf(@NotNull RRSignPdfProperties rRPdfProperties,
             String inputFile,
             String outputFile) {
+        if(null != Report.logLevel){
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
+        }
         this.rRSignPdfProperties = rRPdfProperties;
         this.inputFile = inputFile;
         this.outputFile = outputFile;

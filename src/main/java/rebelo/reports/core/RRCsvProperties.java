@@ -36,7 +36,7 @@ public class RRCsvProperties extends ARRPropSWEO{
      * @param prop 
      * @throws rebelo.reports.core.NullNotAllowedException 
      */
-    public RRCsvProperties(@NotNull RRProperties prop) throws NullNotAllowedException {
+    public RRCsvProperties(@NotNull RRProperties prop) throws NullNotAllowedException {        
         super(prop);
         this.simCsvConfig = new SimpleCsvReportConfiguration();
         LOG.debug("Start instance 'RRCsvProperties'");
