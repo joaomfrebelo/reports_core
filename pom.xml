@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rebelo.reports.core</groupId>
     <artifactId>reports_core</artifactId>
-    <version>1.2.1-Beta</version>
+    <version>1.2.2-Beta</version>
     <packaging>jar</packaging>
     <description>Rebelo Reports is a middleware to use the Jasper Reports Framework 
         in the cases that you can not use the Jasper Reports embeded in you software, 
@@ -199,31 +199,31 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.36</version>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
             <version>42.2.5</version>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>com.microsoft.sqlserver</groupId>
             <artifactId>mssql-jdbc</artifactId>
             <version>7.2.2.jre8</version>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>org.firebirdsql.jdbc</groupId>
             <artifactId>jaybird-jdk18</artifactId>
             <version>3.0.5</version>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
         <dependency>
             <groupId>javax.resource</groupId>
             <artifactId>connector-api</artifactId>
             <version>1.5</version>
-            <scope>test</scope>
+            <!-- <scope>test</scope> -->
         </dependency>
         <!-- Uncomment if you wont to connect to Oracle
              Download the driver from Oracle and put it in lib directoy
