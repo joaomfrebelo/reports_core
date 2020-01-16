@@ -61,8 +61,8 @@ public class RRDsDatabase implements IRRDsProperties {
     @Null
     private String password;
 
-    public RRDsDatabase() {        
-        if(null != Report.logLevel){
+    public RRDsDatabase() {
+        if (null != Report.logLevel) {
             Configurator.setLevel(getClass().getName(), Report.logLevel);
         }
         LOG.debug(() -> "instance created");
@@ -189,25 +189,30 @@ public class RRDsDatabase implements IRRDsProperties {
 
     /**
      * Get the data source in JasperFillManager
-     * 
+     *
      * @return
      * @throws rebelo.reports.core.datasource.DataSourceException
      */
     @Override
     @NotNull
-    public Connection getDataSource() throws DataSourceException{
-        try{
-        LOG.debug("Load driver class");
-        Class.forName(this.getDriver()).newInstance();
+    public Connection getDataSource() throws DataSourceException {
+        try {
+            LOG.traceEntry(()->"Load driver class");
 
-        LOG.debug("Create db connection");
-        Connection conn = DriverManager.getConnection(
-                this.getConnString(),
-                this.getUser(),
-                this.getPassword()
-        );
-        return conn;
-        }catch(@SuppressWarnings("UseSpecificCatch") Exception e){
+            try {
+                Class.forName(this.getDriver(), true, ClassLoader.getSystemClassLoader()).newInstance();
+            } catch (ClassNotFoundException e) {
+                 LOG.debug(()->"Driver as not loaded by 'Class.forName'");
+            }
+            
+            LOG.debug("Create db connection");
+            Connection conn = DriverManager.getConnection(
+                    this.getConnString(),
+                    this.getUser(),
+                    this.getPassword()
+            );
+            return conn;
+        } catch (@SuppressWarnings("UseSpecificCatch") Exception e) {
             throw new DataSourceException(e);
         }
     }
