@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rebelo.reports.core</groupId>
     <artifactId>reports_core</artifactId>
-    <version>1.2.2-Beta</version>
+    <version>1.2.3-Beta</version>
     <packaging>jar</packaging>
     <description>Rebelo Reports is a middleware to use the Jasper Reports Framework 
         in the cases that you can not use the Jasper Reports embeded in you software, 
@@ -35,6 +35,8 @@
                 <version>2.3.2</version>
                 <configuration>
                     <showDeprecation>true</showDeprecation>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
             <plugin>
