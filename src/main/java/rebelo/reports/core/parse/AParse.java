@@ -96,8 +96,8 @@ public abstract class AParse {
     public static final String XSD_VERSION = "1.1";
 
     public AParse() {
-        if(null != Report.logLevel){
-            Configurator.setLevel(getClass().getName(), Report.logLevel); 
+        if (null != Report.logLevel) {
+            Configurator.setLevel(getClass().getName(), Report.logLevel);
             Configurator.setLevel(AParse.class.getName(), Report.logLevel);
         }
     }
@@ -456,26 +456,32 @@ public abstract class AParse {
         LOG.trace(() -> "Create unmarshallInstance");
         LOG.trace(() -> "Read xsd file");
 
-        ClassLoader classLoader = getClass().getClassLoader();
-        URL xsdUrl = classLoader.getResource(
-                "schema_" + XSD_VERSION.replace(".", "_") + ".xsd"
+        //ClassLoader classLoader = getClass().getClassLoader();
+        URL xsdUrl = getClass().getResource(
+                "/schema_" + XSD_VERSION.replace(".", "_") + ".xsd"
         );
-                
+
         LOG.trace(() -> "Creating JAXBContext.newInstance ");
         JAXBContext jaxbContext = JAXBContext.newInstance(Rreport.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-        
+
         if (xsdUrl == null) {
             LOG.warn(() -> "Schema not seted please put the schema file ('schema_"
                     + XSD_VERSION.replace(".", "_")
                     + ".xsd' in the same folder as your java file");
         } else {
             File xsd = new File(xsdUrl.getFile());
-            LOG.debug(() -> "Seting xsd shema file'" + xsd.getAbsolutePath() + "'");
-            SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-            Schema schema = sf.newSchema(xsd);
-            unmarshaller.setSchema(schema);
-            LOG.trace(() -> "Schema seted");
+            if (xsd.isFile() && xsd.canRead()) {
+                LOG.debug(() -> "Seting xsd shema file '" + xsd.getAbsolutePath() + "'");
+                SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+                Schema schema = sf.newSchema(xsd);
+                unmarshaller.setSchema(schema);
+                LOG.trace(() -> "Schema seted");
+            } else {
+                LOG.debug(() -> "XSD shema path file '"
+                        + xsd.getAbsolutePath()
+                        + "' is not a file or is not readable");
+            }
         }
 
         return unmarshaller;
