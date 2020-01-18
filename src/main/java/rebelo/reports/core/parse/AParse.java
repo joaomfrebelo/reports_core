@@ -457,7 +457,8 @@ public abstract class AParse {
 
         ClassLoader classLoader = getClass().getClassLoader();
         URL xsdUrl = classLoader.getResource(
-                "./schema_" + XSD_VERSION.replace(".", "_") + ".xsd");
+                "schema_" + XSD_VERSION.replace(".", "_") + ".xsd"
+        );
                 
         LOG.trace(() -> "Creating JAXBContext.newInstance ");
         JAXBContext jaxbContext = JAXBContext.newInstance(Rreport.class);
