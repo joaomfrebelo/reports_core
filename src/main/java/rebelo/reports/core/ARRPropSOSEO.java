@@ -21,7 +21,6 @@ import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -55,6 +54,7 @@ public abstract class ARRPropSOSEO {
     public ARRPropSOSEO(@NotNull RRProperties prop) throws NullNotAllowedException{
         if(null != Report.logLevel){
             Configurator.setLevel(getClass().getName(), Report.logLevel);
+            Configurator.setLevel(ARRPropSOSEO.class.getName(), Report.logLevel);
         }
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "ARRPropSOSEO");

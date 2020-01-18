@@ -55,6 +55,7 @@ public abstract class ARRPropSWEO {
     public ARRPropSWEO(@NotNull RRProperties prop) throws NullNotAllowedException{        
         if(null != Report.logLevel){
             Configurator.setLevel(getClass().getName(), Report.logLevel);
+            Configurator.setLevel(ARRPropSWEO.class.getName(), Report.logLevel);
         }
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "ARRPropSWEO");

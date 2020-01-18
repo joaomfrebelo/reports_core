@@ -22,7 +22,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.Report;
-import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -60,6 +59,7 @@ public abstract class ARRDsJRDataSource implements IRRDsProperties{
     public ARRDsJRDataSource() {        
         if(null != Report.logLevel){
             Configurator.setLevel(getClass().getName(), Report.logLevel);
+            Configurator.setLevel(ARRDsJRDataSource.class.getName(), Report.logLevel);
         }
     }
 

@@ -97,7 +97,8 @@ public abstract class AParse {
 
     public AParse() {
         if(null != Report.logLevel){
-            Configurator.setLevel(getClass().getName(), Report.logLevel);
+            Configurator.setLevel(getClass().getName(), Report.logLevel); 
+            Configurator.setLevel(AParse.class.getName(), Report.logLevel);
         }
     }
 

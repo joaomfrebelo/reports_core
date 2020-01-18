@@ -70,6 +70,7 @@ public abstract class ARRDsHttp extends ARRDsJRDataSource {
     public ARRDsHttp() {
         if(null != Report.logLevel){
             Configurator.setLevel(getClass().getName(), Report.logLevel);
+            Configurator.setLevel(ARRDsHttp.class.getName(), Report.logLevel);
         }
     }
 
