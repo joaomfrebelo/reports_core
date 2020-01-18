@@ -17,9 +17,14 @@ Rebelo Reports Core is the core of the Rebelo Reports is not intende
     OMR      - 4a4278e6
     JCL      - 5590c4f818 based on jdk8u212-b03)
 
+    Linux server-linux 5.0.0-37-generic
+    openjdk version "1.8.0_232"
+    OpenJDK Runtime Environment (AdoptOpenJDK)(build 1.8.0_232-b09)
+    OpenJDK 64-Bit Server VM (AdoptOpenJDK)(build 25.232-b09, mixed mode)
+
 ## TODO
     Parse from json
-    Linux tests
+    Full Linux unit tests
     
 
 ## To include in your project
