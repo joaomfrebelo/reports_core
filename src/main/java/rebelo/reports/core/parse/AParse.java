@@ -94,7 +94,7 @@ public abstract class AParse {
      * The XSD version that the parses parse
      */
     public static final String XSD_VERSION = "1.1";
-
+    
     public AParse() {
         if (null != Report.logLevel) {
             Configurator.setLevel(getClass().getName(), Report.logLevel);
@@ -198,11 +198,11 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         return this.getOutputBaseDir() == null
                 ? path
                 : this.getOutputBaseDir() + path;
-
+        
     }
 
     /**
@@ -228,7 +228,7 @@ public abstract class AParse {
             MalformedURLException,
             DataSourceException,
             java.text.ParseException {
-
+        
         Rreport rreport = this.unmarshaller(file);
         return parse(rreport);
     }
@@ -250,7 +250,7 @@ public abstract class AParse {
             SAXException,
             NullNotAllowedException,
             Exception {
-
+        
         Rreport rreport = this.unmarshaller(strXml);
         return parse(rreport);
     }
@@ -272,7 +272,7 @@ public abstract class AParse {
             SAXException,
             NullNotAllowedException,
             Exception {
-
+        
         Rreport rreport = this.unmarshaller(url);
         return parse(rreport);
     }
@@ -301,13 +301,13 @@ public abstract class AParse {
             MalformedURLException,
             DataSourceException {
         LOG.trace(() -> "startig parseReport");
-
+        
         RRProperties prop = new RRProperties();
-
+        
         this.parseReportType(prop, rreport.getReporttype());
-
+        
         LOG.trace(() -> "startig populate RRProperties");
-
+        
         prop.setJasperFile(
                 this.getJasperFileBaseDir() == null
                 ? rreport.getJasperfile().getValue()
@@ -320,7 +320,7 @@ public abstract class AParse {
                 return ex.getMessage();
             }
         });
-
+        
         if (rreport.getJasperfile().getCopies() == null) {
             LOG.debug(() -> "Copies in report xml file was 'null', seted to 1 copie");
             prop.setCopies(1);
@@ -330,16 +330,16 @@ public abstract class AParse {
                     + " copies");
             prop.setCopies(rreport.getJasperfile().getCopies().intValue());
         }
-
+        
         this.parseReportType(prop, rreport.getReporttype());
         LOG.debug(() -> "ReportType parsed");
-
+        
         this.parseDatasource(prop, rreport.getDatasource());
         LOG.debug(() -> "datasource parsed");
-
+        
         this.parseParameters(prop, rreport.getParameters());
         LOG.debug(() -> "parameters parsed");
-
+        
         return prop;
     }
 
@@ -359,25 +359,25 @@ public abstract class AParse {
             SAXException,
             ParseException,
             NullNotAllowedException {
-
+        
         LOG.trace(() -> "checking file to be unmarshaller");
-
+        
         if (file == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "file");
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         if (file.isFile() == false) {
             Log.error("'" + file.getAbsolutePath() + "'" + " is not a file");
             throw new ParseException("'" + file.getAbsolutePath() + "'" + " is not a file");
         }
-
+        
         if (file.canRead() == false) {
             Log.error("'" + file.getAbsolutePath() + "'" + " is not readable");
             throw new ParseException("'" + file.getAbsolutePath() + "'" + " is not readable");
         }
-
+        
         LOG.debug(() -> "Init parse");
         Unmarshaller unmarshaller = this.unmarshallInstance();
         LOG.debug(() -> "unmarshalling file '" + file.getAbsolutePath() + "'");
@@ -406,7 +406,7 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         LOG.debug(() -> "Init parse");
         Unmarshaller unmarshaller = this.unmarshallInstance();
         LOG.debug(() -> "unmarshalling string");
@@ -434,7 +434,7 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         LOG.debug(() -> "Init parse");
         Unmarshaller unmarshaller = this.unmarshallInstance();
         LOG.debug(() -> "unmarshalling url");
@@ -455,35 +455,31 @@ public abstract class AParse {
     public Unmarshaller unmarshallInstance() throws SAXException, JAXBException {
         LOG.trace(() -> "Create unmarshallInstance");
         LOG.trace(() -> "Read xsd file");
-
-        //ClassLoader classLoader = getClass().getClassLoader();
+        
         URL xsdUrl = getClass().getResource(
                 "/schema_" + XSD_VERSION.replace(".", "_") + ".xsd"
         );
-
+        
         LOG.trace(() -> "Creating JAXBContext.newInstance ");
         JAXBContext jaxbContext = JAXBContext.newInstance(Rreport.class);
         Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
-
+        
         if (xsdUrl == null) {
             LOG.warn(() -> "Schema not seted please put the schema file ('schema_"
                     + XSD_VERSION.replace(".", "_")
                     + ".xsd' in the same folder as your java file");
         } else {
-            File xsd = new File(xsdUrl.getFile());
-            if (xsd.isFile() && xsd.canRead()) {
-                LOG.debug(() -> "Seting xsd shema file '" + xsd.getAbsolutePath() + "'");
+            try {
+                LOG.debug(() -> "Seting xsd shema file '" + xsdUrl.toString() + "'");
                 SchemaFactory sf = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-                Schema schema = sf.newSchema(xsd);
+                Schema schema = sf.newSchema(xsdUrl);
                 unmarshaller.setSchema(schema);
                 LOG.trace(() -> "Schema seted");
-            } else {
-                LOG.debug(() -> "XSD shema path file '"
-                        + xsd.getAbsolutePath()
-                        + "' is not a file or is not readable");
+            } catch (@SuppressWarnings("UseSpecificCatch") Exception e) {
+                LOG.error(() -> "The schema was not seted because '" + e.getMessage() + "'");
             }
         }
-
+        LOG.traceExit();
         return unmarshaller;
     }
 
@@ -499,9 +495,9 @@ public abstract class AParse {
      */
     protected void parseReportType(@NotNull RRProperties prop, @NotNull Rreport.Reporttype repType)
             throws NullNotAllowedException, RRPropertiesException, ParseException {
-
+        
         LOG.trace("Init parseReportType method");
-
+        
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "parsereportType prop");
             LOG.error(msg);
@@ -512,9 +508,9 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         LOG.trace("Parsing ReportType");
-
+        
         if (repType.getPdf() != null) {
             prop.setType(RRProperties.Types.pdf);
             prop.setOutputFile(
@@ -614,9 +610,9 @@ public abstract class AParse {
     @SuppressWarnings("null")
     protected void parseSign(RRPdfProperties pdfProp, Sign sign)
             throws NullNotAllowedException, RRPropertiesException {
-
+        
         LOG.trace("Init parseSign method");
-
+        
         if (pdfProp == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "parseSign pdfProp");
             LOG.error(msg);
@@ -627,7 +623,7 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         LOG.trace("Parsing sign");
         RRSignPdfProperties signProp = new RRSignPdfProperties();
         signProp.setJavaKeyStorePath(
@@ -640,13 +636,13 @@ public abstract class AParse {
         signProp.setCertificatePassword(sign.getKeystore().getCertificate().getPassword());
         signProp.setLevel(RRSignPdfProperties.Level.valueOf(sign.getLevel().toUpperCase()));
         signProp.setType(RRSignPdfProperties.Type.valueOf(sign.getType().toUpperCase()));
-
+        
         try {
             signProp.isVisible(Util.parseBool(sign.getRectangle().getVisible()));
         } catch (Exception e) {
             throw new RRPropertiesException(e.getMessage());
         }
-
+        
         if (signProp.isVisible()) {
             Float x = Float.valueOf(sign.getRectangle().getPosition().getX().toString());
             Rectangle rec = new Rectangle(
@@ -661,7 +657,7 @@ public abstract class AParse {
         if (sign.getLocation() != null) {
             signProp.setLocation(sign.getLocation());
         }
-
+        
         if (sign.getReazon() != null) {
             signProp.setReazon(sign.getReazon());
         }
@@ -682,9 +678,9 @@ public abstract class AParse {
     protected void parseParameters(@NotNull RRProperties prop,
             @NotNull Rreport.Parameters parameters)
             throws NullNotAllowedException, ParseException, ParseException {
-
+        
         LOG.trace("Init parseParameters method");
-
+        
         if (prop == null) {
             String msg = String.format(
                     Message.SET_NULL_ERROR,
@@ -697,15 +693,15 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         if (parameters.getParameter() == null) {
             LOG.debug(() -> "No parameters parameters.getParameter() was null");
         }
-
+        
         if (parameters.getParameter().isEmpty()) {
             LOG.debug(() -> "No parameters parameters.getParameter() doesn't have elements");
         }
-
+        
         for (Parameter param : parameters.getParameter()) {
             String name = param.getName();
             String value = param.getValue().getValue();
@@ -763,7 +759,7 @@ public abstract class AParse {
                     throw new ParseException("Unknowed parameters type '" + param.getType() + "'");
             }
         }
-
+        
     }
 
     /**
@@ -778,9 +774,9 @@ public abstract class AParse {
      */
     protected void parseDatasource(@NotNull RRProperties prop,
             @NotNull Rreport.Datasource datasource) throws NullNotAllowedException, MalformedURLException, DataSourceException {
-
+        
         LOG.trace("Init parseDatasource method");
-
+        
         if (prop == null) {
             String msg = String.format(Message.SET_NULL_ERROR, "parseDatasource pdfProp");
             LOG.error(msg);
@@ -791,7 +787,7 @@ public abstract class AParse {
             LOG.error(msg);
             throw new NullNotAllowedException(msg);
         }
-
+        
         if (datasource.getDatabase() != null) {
             Database db = datasource.getDatabase();
             RRDsDatabase dsProp = new RRDsDatabase();
@@ -803,7 +799,7 @@ public abstract class AParse {
             LOG.debug(() -> "Datasource setted to 'Database'");
             return;
         }
-
+        
         if (datasource.getJsonhttp() != null) {
             RRDsHttpJson propJsds = new RRDsHttpJson();
             Jsonserver jserver = datasource.getJsonhttp();
@@ -819,7 +815,7 @@ public abstract class AParse {
             LOG.debug(() -> "Datasource setted to 'JsonHttp'");
             return;
         }
-
+        
         if (datasource.getJsonhttps() != null) {
             RRDsHttpsJson propJsds = new RRDsHttpsJson();
             Jsonserver jserver = datasource.getJsonhttps();
@@ -835,7 +831,7 @@ public abstract class AParse {
             LOG.debug(() -> "Datasource setted to 'JsonHttps'");
             return;
         }
-
+        
         if (datasource.getXmlhttp() != null) {
             RRDsHttpXml propXml = new RRDsHttpXml();
             Xmlserver jserver = datasource.getXmlhttp();
@@ -851,7 +847,7 @@ public abstract class AParse {
             LOG.debug(() -> "Datasource setted to 'XmlHttp'");
             return;
         }
-
+        
         if (datasource.getXmlhttps() != null) {
             RRDsHttpsXml propXml = new RRDsHttpsXml();
             Xmlserver jserver = datasource.getXmlhttps();
@@ -868,5 +864,5 @@ public abstract class AParse {
             //return;
         }
     }
-
+    
 }
