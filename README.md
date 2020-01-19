@@ -50,6 +50,12 @@ In the dependecies of your pom file
 	    <version>Tag of version</version>
 	</dependency>
 
+# Existent Modules
+
+To run Rebelo Reports and generate Jasper reports from any non java language  
+## Rebelo Report Cli  
+https://github.com/joaomfrebelo/reports_cli
+
 
 ## License
 
