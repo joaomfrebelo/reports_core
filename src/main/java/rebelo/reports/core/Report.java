@@ -16,6 +16,7 @@
  */
 package rebelo.reports.core;
 
+import java.io.File;
 import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -25,6 +26,7 @@ import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
 import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PrinterName;
+import javax.validation.constraints.Null;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -45,6 +47,9 @@ import rebelo.reports.core.datasource.ARRDsJRDataSource;
 import rebelo.reports.core.datasource.DataSourceException;
 import rebelo.reports.core.datasource.IRRDsProperties;
 import rebelo.reports.core.datasource.RRDsDatabase;
+import rebelo.reports.core.sign.RRSignPdf;
+import rebelo.reports.core.sign.RRSignPdfProperties;
+import rebelo.reports.core.sign.SignPdfException;
 
 /**
  * The class that generates the jasper report
@@ -57,7 +62,7 @@ public class Report {
      * The log level
      */
     public static Level logLevel = null;
-    
+
     /**
      * The report index parameter name to passed to the jasperreport.
      * <br>
@@ -87,10 +92,15 @@ public class Report {
     private ArrayList<JasperPrint> jasperPrint;
 
     /**
+     * The properties to sign the report
+     */
+    private RRSignPdfProperties signProp = null;
+
+    /**
      * The class that generates the jasper report
      */
     public Report() {
-        if(null != logLevel){
+        if (null != logLevel) {
             Configurator.setLevel(getClass().getName(), logLevel);
         }
         LOG.debug("Instance initiated");
@@ -162,6 +172,30 @@ public class Report {
             throw new NullNotAllowedException(msg);
         }
         this.jasperPrint = jasperPrint;
+    }
+
+    /**
+     * Get the pdf sign properties
+     *
+     * @return null if no properties assigned
+     */
+    @Null
+    public RRSignPdfProperties getSignProp() {
+        LOG.traceEntry();
+        return signProp;
+    }
+
+    /**
+     * Set the pdf sign properties
+     *
+     * @param signProp
+     */
+    public void setSignProp(@Null RRSignPdfProperties signProp) {
+        LOG.traceEntry(() -> String.format(
+                "Seting pdf sign properties to '%s'",
+                signProp == null ? "null" : "object")
+        );
+        this.signProp = signProp;
     }
 
     /**
@@ -263,6 +297,10 @@ public class Report {
                 exporter.setExporterInput(simpleExporterInput);
                 exporter.setExporterOutput(pdfProp.getSimpleOutputStreamExporterOutput());
                 exporter.setConfiguration(pdfProp.getSimplePdfExporterConfiguration());
+                LOG.trace("Seting the pdf sign properties");
+                if (pdfProp.isSignPDF()) {
+                    this.signProp = pdfProp.getSignProp();
+                }
                 break;
             case html:
                 LOG.trace("Start export HTML report");
@@ -414,6 +452,7 @@ public class Report {
      * @throws rebelo.reports.core.RRException
      * @throws rebelo.reports.core.RRPropertiesException
      * @throws rebelo.reports.core.PrinterNotFoundException
+     * @throws rebelo.reports.core.sign.SignPdfException
      */
     public void exportReport() throws
             NullNotAllowedException,
@@ -425,11 +464,93 @@ public class Report {
             DataSourceException,
             RRException,
             RRPropertiesException,
-            PrinterNotFoundException
-             {
+            PrinterNotFoundException,
+            SignPdfException {
+        LOG.traceEntry();
         this.getExporter().exportReport();
-        LOG.debug("End of export report, executed in {} miliseconds", 
-                () -> ChronoUnit.MILLIS.between(start, LocalDateTime.now()));
+
+        LOG.info("Report exported from Jasper");
+        LOG.debug("Check if the report is to be signed");
+
+        if (this.prop.getType().equals(RRProperties.Types.pdf)) {
+            LOG.info("The report is a PDF");
+            RRPdfProperties pdfProp = (RRPdfProperties) this.prop.getTypeProperties();
+            if (pdfProp.isSignPDF()) {
+                this.signPdf();
+            } else {
+                LOG.info("The report is not seted to be signed");
+            }
+        } else {
+            LOG.info("The report is not a PDF (is not to be signed)");
+        }
+
+        LOG.traceExit("End of export report, executed in {} miliseconds",
+                ChronoUnit.MILLIS.between(start, LocalDateTime.now()));
+    }
+
+    /**
+     *
+     * Sign the PDF
+     *
+     * @throws SignPdfException
+     * @throws rebelo.reports.core.NullNotAllowedException
+     */
+    public void signPdf() throws SignPdfException, NullNotAllowedException {
+        LOG.traceEntry();
+        try {
+            if (this.signProp == null) {
+                throw new SignPdfException("RRSignPdfProperties is null, pdf can not be signed");
+            }
+
+            File tmp = new File(prop.getOutputFile() + ".tmp");
+
+            RRSignPdf signPdf = new RRSignPdf(
+                    this.signProp,
+                    this.prop.getOutputFile(),
+                    tmp.getAbsolutePath()
+            );
+            LOG.debug("Is going to sign the PDF");
+            signPdf.signPdf();
+
+            LOG.info(() -> "PDF is sigend in the temp file " + tmp.getAbsolutePath());
+
+            LOG.trace("IS going to delete not signed pdf and rename the temp sign file");
+
+            File pdf = new File(prop.getOutputFile());
+            if (pdf.exists()) {
+                LOG.trace(() -> "Deleting file " + pdf.getAbsolutePath());
+                pdf.delete();
+            } else {
+                LOG.warn(() -> String.format(
+                        "File '%s' not exist to be deleted",
+                        pdf.getAbsolutePath())
+                );
+            }
+
+            if (tmp.exists()) {
+                LOG.trace(() -> String.format(
+                        "Renaming file '%s' to '%s'",
+                        tmp.getAbsolutePath(),
+                        pdf.getAbsolutePath()
+                ));
+                tmp.renameTo(pdf);
+            } else {
+                String msg = String.format(
+                        "The signed pdf file '%s' not exist to be renamed",
+                        tmp.getAbsoluteFile()
+                );
+                LOG.error(msg);
+                throw new SignPdfException(msg);
+            }
+
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+            File file = new File(prop.getOutputFile());
+            if (file.exists()) {
+                file.delete();
+            }
+            throw new SignPdfException(e);
+        }
     }
 
 }

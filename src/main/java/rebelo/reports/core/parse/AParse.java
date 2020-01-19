@@ -663,7 +663,7 @@ public abstract class AParse {
         }
         LOG.debug("sign parsed");
         pdfProp.setSignProp(signProp);
-        LOG.info(() -> "Sign prop seted to: " + signProp.toString());
+        LOG.info(() -> "Sign prop seted");
     }
 
     /**

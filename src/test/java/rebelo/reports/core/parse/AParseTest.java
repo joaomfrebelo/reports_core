@@ -145,7 +145,7 @@ public class AParseTest {
      */
     @Test
     public void test9000ParseFile() throws Exception {
-        System.out.println("test0010Parse");
+        System.out.println("test9000Parse");
         ClassLoader classLoader = getClass().getClassLoader();
         File xml = new File(classLoader.getResource("./parsexml/mysql_pdf_signed.xml").getFile());
 
@@ -173,7 +173,7 @@ public class AParseTest {
      */
     @Test
     public void test9010ParseString() throws Exception {
-        System.out.println("test0010Parse");
+        System.out.println("test9010Parse");
         ClassLoader classLoader = getClass().getClassLoader();
         File xml = new File(classLoader.getResource("./parsexml/mysql_pdf_signed.xml").getFile());
 
@@ -207,7 +207,7 @@ public class AParseTest {
     @Test
     @org.junit.Ignore
     public void test9010ParseUrl() throws Exception {
-        System.out.println("test0010Parse");
+        System.out.println("test9010Parse");
         ClassLoader classLoader = getClass().getClassLoader();
         
         File resDir = new File(classLoader.getResource("./").getFile());
