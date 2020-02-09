@@ -42,7 +42,7 @@
                 <xs:element name="reporttype" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation>
-                            The type of report taht should be generated.
+                            The type of report that should be generated.
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
@@ -432,7 +432,8 @@
             <xs:sequence>
                 <xs:element name="printer" type="xs:string" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
-                        <xs:documentation>The printer name.</xs:documentation>
+                        <xs:documentation>The printer name. A empty string will 
+                            resault in default printer selection</xs:documentation>
                     </xs:annotation>
                 </xs:element>
             </xs:sequence>
