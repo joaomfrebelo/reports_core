@@ -410,7 +410,7 @@ public class Report {
                 }
                 exporter.setConfiguration(prtProp.getSimplePrintServiceExporterConfiguration());
 
-                if (prtProp.getSelectedPrinter() == null) {
+                if (prtProp.getSelectedPrinter() == null || prtProp.getSelectedPrinter().trim().equals("")) {
                     PrintService service = PrintServiceLookup.lookupDefaultPrintService();
                     prtProp.getPrintServiceAttributeSet().add(new PrinterName(service.getName(), null));
                     return exporter;

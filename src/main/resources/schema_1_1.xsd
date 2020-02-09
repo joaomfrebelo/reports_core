@@ -27,7 +27,8 @@
                 <xs:element name="jasperfile" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation>
-                            The full path for the Jasper reports file.
+                            The full path for the Jasper reports file,
+                            or the relative path to jasperFileBaseDir
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
@@ -41,7 +42,7 @@
                 <xs:element name="reporttype" minOccurs="1" maxOccurs="1">
                     <xs:annotation>
                         <xs:documentation>
-                            The type the the report should be generated.
+                            The type of report taht should be generated.
                         </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
