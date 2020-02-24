@@ -157,5 +157,7 @@ public class RRSignPdf {
         }
         sap.setCertificationLevel(level);
         stp.close();
+        reader.close();
+        fout.close();
     }
 }

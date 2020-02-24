@@ -520,6 +520,9 @@ public class Report {
             if (pdf.exists()) {
                 LOG.trace(() -> "Deleting file " + pdf.getAbsolutePath());
                 pdf.delete();
+                if(pdf.exists()){
+                    LOG.debug(() -> "File " + pdf.getAbsolutePath() + " was not deleted");
+                }
             } else {
                 LOG.warn(() -> String.format(
                         "File '%s' not exist to be deleted",
