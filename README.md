@@ -8,20 +8,6 @@ The Rebelo reports Core is the the core of Rebelo Reports is to be 
 
 Rebelo Reports Core is the core of the Rebelo Reports is not intended to be used alonebut with other modules (That at the time are in develop)
 
-## Tested
-    The software was teste with Windows® 10 Pro 1809
-    openjdk version "1.8.0_212"
-    OpenJDK Runtime Environment (build 1.8.0_212-b03)
-    Eclipse® OpenJ9® VM (build openj9-0.14.0, JRE 1.8.0 Windows® 10 amd64-64-Bit Compressed References 20190417_339 (JIT enabled, AOT enabled)
-    OpenJ9   - bad1d4d06
-    OMR      - 4a4278e6
-    JCL      - 5590c4f818 based on jdk8u212-b03)
-
-    Linux server-linux 5.0.0-37-generic
-    openjdk version "1.8.0_232"
-    OpenJDK Runtime Environment (AdoptOpenJDK)(build 1.8.0_232-b09)
-    OpenJDK 64-Bit Server VM (AdoptOpenJDK)(build 25.232-b09, mixed mode)
-
 ## TODO
     Parse from json
     Full Linux unit tests
@@ -52,9 +38,50 @@ In the dependecies of your pom file
 
 # Existent Modules
 
-To run Rebelo Reports and generate Jasper reports from any non java language  
 ## Rebelo Report Cli  
+To run Rebelo Reports and generate Jasper reports from any non java language  
 https://github.com/joaomfrebelo/reports_cli
+
+## Rebelo Reports for PHP  
+To run Rebelo Reports and generate Jasper reports from PHP  
+https://github.com/joaomfrebelo/reports_4_php
+  
+## Features  
+### Export to:  
+- PDF  
+- Digital Sign PDF
+- Csv
+- Docx
+- Html
+- Json
+- Ods  
+- Odt  
+- Pptx  
+- Rtf  
+- Text  
+- Xls  
+- Xlsx  
+- Xml  
+- To printer
+
+### Others
+- Export multiple reports as one with the same exporter.
+- Export copies of the repoprt at onces with a parametrs of the copy index  
+- Pass parameters to the report well typed, parameters types:  
+    - const P_STRING     = "string";
+    - const P_BOOL       = "bool";
+    - const P_BOOLEAN    = "boolean";
+    - const P_DOUBLE     = "double";
+    - const P_FLOAT      = "float";
+    - const P_INTEGER    = "integer";
+    - const P_LONG       = "long";
+    - const P_SHORT      = "short";
+    - const P_BIGDECIMAL = "bigdecimal";
+    - const P_DATE       = "date";
+    - const P_TIME       = "time";
+    - const P_SQL_TIME   = "sqltime";
+    - const P_SQL_DATE   = "sqldate";
+    - const P_TIMESTAMP  = "timestamp";
 
 
 ## License
