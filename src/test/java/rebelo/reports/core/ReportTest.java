@@ -133,8 +133,8 @@ public class ReportTest {
     /**
      * Test of getProperties method, of class Report.
      */
-    @SuppressWarnings("null") 
-    @Test    
+    @SuppressWarnings("null")
+    @Test
     public void testSetPropertiesNull() {
         System.out.println("setPropertiesNull");
         Report report = new Report();

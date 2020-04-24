@@ -127,6 +127,10 @@ public class RRSignPdf {
                 rRSignPdfProperties.getCertificateName(),
                 rRSignPdfProperties.getCertificatePassword().toCharArray());
 
+        if(key == null){
+            throw new SignPdfException("Please verify the cetificate name or password");
+        }
+        
         java.security.cert.Certificate[] chain = ks.getCertificateChain(rRSignPdfProperties.getCertificateName());
         PdfReader reader = new PdfReader(inputFile);
         FileOutputStream fout = new FileOutputStream(outputFile);
