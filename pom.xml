@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rebelo.reports.core</groupId>
     <artifactId>reports_core</artifactId>
-    <version>1.4-Beta-1</version>
+    <version>1.4-Beta-2</version>
     <packaging>jar</packaging>
     <description>Rebelo Reports is a middleware to use the Jasper Reports Framework 
         in the cases that you can not use the Jasper Reports embeded in you software, 
@@ -226,6 +226,11 @@
             <artifactId>connector-api</artifactId>
             <version>1.5</version>
             <!-- <scope>test</scope> -->
+        </dependency>        
+        <dependency>
+            <groupId>net.sf.barcode4j</groupId>
+            <artifactId>barcode4j</artifactId>
+            <version>2.0</version>
         </dependency>
         <!-- Uncomment if you wont to connect to Oracle
              Download the driver from Oracle and put it in lib directoy
