@@ -49,6 +49,12 @@
 					</valueAxisFormat>
 				</linePlot>
 			</xyLineChart>
+			<componentElement>
+				<reportElement x="0" y="90" width="120" height="60" uuid="78a67d70-9467-4dab-83a4-8daa60f401a3"/>
+				<jr:EAN13 xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<jr:codeExpression><![CDATA["123456789012"]]></jr:codeExpression>
+				</jr:EAN13>
+			</componentElement>
 		</band>
 	</detail>
 	<columnFooter>

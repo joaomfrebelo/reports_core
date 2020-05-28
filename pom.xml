@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>rebelo.reports.core</groupId>
     <artifactId>reports_core</artifactId>
-    <version>1.4-Beta-3</version>
+    <version>1.4-Beta-4</version>
     <packaging>jar</packaging>
     <description>Rebelo Reports is a middleware to use the Jasper Reports Framework 
         in the cases that you can not use the Jasper Reports embeded in you software, 
@@ -152,8 +152,13 @@
         <dependency>
             <groupId>org.apache.xmlgraphics</groupId>
             <artifactId>batik-svg-dom</artifactId>
-            <version>1.7</version>
-        </dependency>                          
+            <version>1.13</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.xmlgraphics</groupId>
+            <artifactId>batik-bridge</artifactId>
+            <version>1.13</version>
+        </dependency>                                    
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itextpdf</artifactId>
