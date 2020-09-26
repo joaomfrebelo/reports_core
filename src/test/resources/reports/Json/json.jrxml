@@ -45,22 +45,8 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="110" splitType="Stretch">
+		<band height="52" splitType="Stretch">
 			<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.HorizontalRowLayout"/>
-			<componentElement>
-				<reportElement x="0" y="0" width="555" height="110" uuid="f36366b5-1aba-44e1-85b2-3dbeb725c11b"/>
-				<jr:list xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" printOrder="Vertical">
-					<datasetRun subDataset="DS List" uuid="f7310f8b-5a82-492e-9aa2-956ce42633b9">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonData)$P{REPORT_DATA_SOURCE}).subDataSource("address")]]></dataSourceExpression>
-					</datasetRun>
-					<jr:listContents height="110" width="555">
-						<textField>
-							<reportElement x="0" y="0" width="100" height="30" uuid="acba395f-92a8-461b-968f-f706f92c302f"/>
-							<textFieldExpression><![CDATA[$F{street}]]></textFieldExpression>
-						</textField>
-					</jr:listContents>
-				</jr:list>
-			</componentElement>
 		</band>
 	</title>
 	<pageHeader>
