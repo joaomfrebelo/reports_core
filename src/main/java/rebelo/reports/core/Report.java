@@ -17,6 +17,7 @@
 package rebelo.reports.core;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import javax.validation.constraints.NotNull;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -41,6 +42,11 @@ import net.sf.jasperreports.engine.export.ooxml.JRPptxExporter;
 import net.sf.jasperreports.engine.export.ooxml.JRXlsxExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdsExporter;
 import net.sf.jasperreports.engine.export.oasis.JROdtExporter;
+import net.sf.jasperreports.export.SimpleHtmlExporterOutput;
+import net.sf.jasperreports.export.SimpleJsonExporterOutput;
+import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import net.sf.jasperreports.export.SimpleXmlExporterOutput;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.datasource.ARRDsJRDataSource;
@@ -58,6 +64,7 @@ import rebelo.reports.core.sign.SignPdfException;
  */
 public class Report {
 
+    public Object outputStream;
     /**
      * The log level
      */
@@ -86,7 +93,7 @@ public class Report {
     protected static final Logger LOG = LogManager.getLogger();
 
     /**
-     * Report engine Do not access directly to this propertie, use the
+     * Report engine Do not access directly to this properties, use the
      * getJaspertPrint method
      */
     private ArrayList<JasperPrint> jasperPrint;
@@ -153,14 +160,14 @@ public class Report {
 
     /**
      *
-     * Set the JasperPrint engine.Whene o getJasperPrint or generate the report
-     * if the not seted it will be setted automataclly. However the RRProperties
-     * parameters, jasper file and driver properies must be seted or will throw
-     * a exception, because JasperPrint can not be instanciated without this
+     * Set the JasperPrint engine.When o getJasperPrint or generate the report
+     * if the not set it will be set automatic. However the RRProperties
+     * parameters, jasper file and driver properties must be set or will throw a
+     * exception, because JasperPrint can not be instantiated without this
      * parameters.
      *
      * This method is only if you wont to define your one instance for any
-     * reazon This will be set automatically
+     * reason This will be set automatically
      *
      * @param jasperPrint
      * @throws rebelo.reports.core.NullNotAllowedException
@@ -201,10 +208,10 @@ public class Report {
     /**
      * Get the JasperReport engine
      *
-     * When o getJasperPrint or you generate the report if the not seted it will
-     * be setted automataclly.However the RRProperties parameters, jasper file
-     * and driver properies must be seted or will throw a exception, because
-     * JasperPrint can not be instanciated without this parameters.This method
+     * When o getJasperPrint or you generate the report if the not set it will
+     * be set automatic.However the RRProperties parameters, jasper file and
+     * driver properties must be set or will throw a exception, because
+     * JasperPrint can not be instantiated without this parameters.This method
      * exist to be possible to manipulate the JasperPrint before the generation
      * of the report
      *
@@ -255,7 +262,7 @@ public class Report {
     }
 
     /**
-     * Gerenate the report
+     * Generate the report
      *
      * @return
      * @throws NullNotAllowedException
@@ -293,9 +300,10 @@ public class Report {
             case pdf:
                 LOG.trace("Start export PDF report");
                 RRPdfProperties pdfProp = (RRPdfProperties) prop.getTypeProperties();
+                outputStream = pdfProp.getSimpleOutputStreamExporterOutput();
                 exporter = new JRPdfExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(pdfProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(pdfProp.getSimplePdfExporterConfiguration());
                 LOG.trace("Seting the pdf sign properties");
                 if (pdfProp.isSignPDF()) {
@@ -305,97 +313,109 @@ public class Report {
             case html:
                 LOG.trace("Start export HTML report");
                 RRHtmlProperties htmlProp = (RRHtmlProperties) prop.getTypeProperties();
+                outputStream = htmlProp.getSimpleHtmlExporterOutput();
                 exporter = new HtmlExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(htmlProp.getSimpleHtmlExporterOutput());
+                exporter.setExporterOutput((SimpleHtmlExporterOutput) outputStream);
                 exporter.setConfiguration(htmlProp.getSimpleHtmlExporterConfiguration());
                 break;
             case csv:
                 LOG.trace("Start export CSV report");
                 RRCsvProperties csvProp = (RRCsvProperties) prop.getTypeProperties();
+                outputStream = csvProp.getSimpleWriterExporterOutput();
                 exporter = new JRCsvExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(csvProp.getSimpleWriterExporterOutput());
+                exporter.setExporterOutput((SimpleWriterExporterOutput) outputStream);
                 exporter.setConfiguration(csvProp.getSimpleCsvReportConfiguration());
                 break;
             case xls:
                 LOG.trace("Start export XLS report");
                 exporter = new JRXlsExporter();
                 RRXlsProperties xlsProp = (RRXlsProperties) prop.getTypeProperties();
+                outputStream = xlsProp.getSimpleOutputStreamExporterOutput();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(xlsProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(xlsProp.getSimpleXlsReportConfiguration());
                 break;
             case xml:
                 LOG.trace("Start export XML report");
                 RRXmlProperties xmlProp = (RRXmlProperties) prop.getTypeProperties();
+                outputStream = xmlProp.getSimpleXmlExporterOutput();
                 exporter = new JRXmlExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(xmlProp.getSimpleXmlExporterOutput());
+                exporter.setExporterOutput((SimpleXmlExporterOutput) outputStream);
                 exporter.setConfiguration(xmlProp.getSimpleReportExportConfiguration());
                 break;
             case rtf:
                 LOG.trace("Start export RTF report");
                 RRRtfProperties rtfProp = (RRRtfProperties) prop.getTypeProperties();
+                outputStream = rtfProp.getSimpleWriterExporterOutput();
                 exporter = new JRRtfExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(rtfProp.getSimpleWriterExporterOutput());
+                exporter.setExporterOutput((SimpleWriterExporterOutput) outputStream);
                 exporter.setConfiguration(rtfProp.getSimpleRtfExporterConfiguration());
                 break;
             case text:
                 LOG.trace("Start export TEXT report");
                 RRTextProperties txtProp = (RRTextProperties) prop.getTypeProperties();
+                outputStream = txtProp.getSimpleWriterExporterOutput();
                 exporter = new JRTextExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(txtProp.getSimpleWriterExporterOutput());
+                exporter.setExporterOutput((SimpleWriterExporterOutput) outputStream);
                 exporter.setConfiguration(txtProp.getSimpleTextExporterConfiguration());
                 break;
             case pptx:
                 LOG.trace("Start export PPTX report");
                 RRPptxProperties pptxProp = (RRPptxProperties) prop.getTypeProperties();
+                outputStream = pptxProp.getSimpleOutputStreamExporterOutput();
                 exporter = new JRPptxExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(pptxProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(new SimplePptxReportConfiguration());
                 break;
             case xlsx:
                 LOG.trace("Start export xlsx report");
                 RRXlsxProperties xlsxProp = (RRXlsxProperties) prop.getTypeProperties();
+                outputStream = xlsxProp.getSimpleOutputStreamExporterOutput();
                 exporter = new JRXlsxExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(xlsxProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(xlsxProp.getSimpleXlsxExporterConfiguration());
                 break;
             case docx:
                 LOG.trace("Start export docx report");
                 RRDocxProperties docxProp = (RRDocxProperties) prop.getTypeProperties();
+                outputStream = docxProp.getSimpleOutputStreamExporterOutput();
                 exporter = new JRDocxExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(docxProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(docxProp.getSimpleDocxExporterConfiguration());
                 break;
             case ods:
                 LOG.trace("Start export ods report");
                 RROdsProperties odsProp = (RROdsProperties) prop.getTypeProperties();
+                outputStream = odsProp.getSimpleOutputStreamExporterOutput();
                 exporter = new JROdsExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(odsProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(odsProp.getSimpleOdsExporterConfiguration());
                 break;
             case odt:
                 LOG.trace("Start export odt report");
                 RROdtProperties odtProp = (RROdtProperties) prop.getTypeProperties();
+                outputStream = odtProp.getSimpleOutputStreamExporterOutput();
                 exporter = new JROdtExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(odtProp.getSimpleOutputStreamExporterOutput());
+                exporter.setExporterOutput((SimpleOutputStreamExporterOutput) outputStream);
                 exporter.setConfiguration(odtProp.getSimpleOdtExporterConfiguration());
                 break;
             case json:
                 LOG.trace("Start export json report");
                 RRJsonProperties jsonProp = (RRJsonProperties) prop.getTypeProperties();
+                outputStream = jsonProp.getSimpleJsonExporterOutput();
                 exporter = new JsonExporter();
                 exporter.setExporterInput(simpleExporterInput);
-                exporter.setExporterOutput(jsonProp.getSimpleJsonExporterOutput());
+                exporter.setExporterOutput((SimpleJsonExporterOutput) outputStream);
                 exporter.setConfiguration(jsonProp.getSimpleJsonExporterConfiguration());
                 break;
             case print:
@@ -469,6 +489,16 @@ public class Report {
         LOG.traceEntry();
         this.getExporter().exportReport();
 
+        if (outputStream != null) {
+
+            try {
+                outputStream.getClass().getMethod("close").invoke(outputStream);
+                LOG.info("Output stream closed");
+            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
+                LOG.debug("Fial to close output stream");
+            }
+        }
+
         LOG.info("Report exported from Jasper");
         LOG.debug("Check if the report is to be signed");
 
@@ -520,7 +550,7 @@ public class Report {
             if (pdf.exists()) {
                 LOG.trace(() -> "Deleting file " + pdf.getAbsolutePath());
                 pdf.delete();
-                if(pdf.exists()){
+                if (pdf.exists()) {
                     LOG.debug(() -> "File " + pdf.getAbsolutePath() + " was not deleted");
                 }
             } else {

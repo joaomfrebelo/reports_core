@@ -73,7 +73,7 @@ public abstract class ARRPropSWEO {
      */
     @NotNull
     public SimpleWriterExporterOutput getSimpleWriterExporterOutput(){
-        LOG.trace("Gettting SimpleWriterExporterOutput");
+        LOG.trace("Getting SimpleWriterExporterOutput");
         return sweoutput;
     }
     

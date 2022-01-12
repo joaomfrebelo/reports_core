@@ -72,7 +72,7 @@ public abstract class ARRPropSOSEO {
      */
     @NotNull
     public SimpleOutputStreamExporterOutput getSimpleOutputStreamExporterOutput(){
-        LOG.trace("Gettting SimpleOutputStreamExporterOutput");
+        LOG.trace("Getting SimpleOutputStreamExporterOutput");
         return simpleExportOutput;
     }
     
