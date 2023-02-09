@@ -24,7 +24,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 import rebelo.reports.core.Report;
-import static rebelo.reports.core.Report.logLevel;
 import rebelo.reports.core.common.Message;
 
 /**
@@ -196,6 +195,7 @@ public class RRDsDatabase implements IRRDsProperties {
     @Override
     @NotNull
     public Connection getDataSource() throws DataSourceException {
+        Connection conn = null;
         try {
             LOG.traceEntry(()->"Load driver class");
 
@@ -206,13 +206,20 @@ public class RRDsDatabase implements IRRDsProperties {
             }
             
             LOG.debug("Create db connection");
-            Connection conn = DriverManager.getConnection(
+            conn = DriverManager.getConnection(
                     this.getConnString(),
                     this.getUser(),
                     this.getPassword()
             );
             return conn;
         } catch (@SuppressWarnings("UseSpecificCatch") Exception e) {
+            try{
+                if(conn != null && !conn.isClosed()){
+                    conn.close();
+                }
+            }catch (Throwable ex){
+
+            }
             throw new DataSourceException(e);
         }
     }

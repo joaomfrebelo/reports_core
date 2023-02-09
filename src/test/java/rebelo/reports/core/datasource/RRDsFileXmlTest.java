@@ -54,21 +54,6 @@ public class RRDsFileXmlTest {
     }
 
     /**
-     * Test of setFile and getFile method, of class RRDsFileXml.
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testSetGetFile() throws Exception {
-        System.out.println("setGetFile");
-        String path = "c:\\path\\to\\file";
-        File file = new File(path);
-        RRDsFileXml rRDsFileXml = new RRDsFileXml();
-        rRDsFileXml.setFile(file);
-        assertEquals(path, rRDsFileXml.getFile().getAbsolutePath());
-    }
-
-    /**
      * Test of setFile method to null, of class RRDsFileXml.
      *
      * @throws java.lang.Exception

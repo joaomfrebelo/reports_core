@@ -104,6 +104,11 @@ public class Report {
     private RRSignPdfProperties signProp = null;
 
     /**
+     * SQL connection to be used in datasource
+     */
+    private java.sql.Connection connection = null;
+
+    /**
      * The class that generates the jasper report
      */
     public Report() {
@@ -220,10 +225,11 @@ public class Report {
      * @throws net.sf.jasperreports.engine.JRException
      * @throws rebelo.reports.core.NullNotAllowedException
      * @throws rebelo.reports.core.RRException
+     * @throws java.sql.SQLException
      */
     @NotNull
     public ArrayList<JasperPrint> getJasperPrint()
-            throws DataSourceException, JRException, NullNotAllowedException, RRException {
+            throws DataSourceException, JRException, NullNotAllowedException, RRException, SQLException {
 
         if (jasperPrint == null) {
             jasperPrint = new ArrayList<>();
@@ -238,13 +244,19 @@ public class Report {
                 prop.getParameters().put(RR_INDEX_PARAMETER, index);
 
                 if (dsProp instanceof RRDsDatabase) {
+                    
+                    if(connection == null || (connection != null && connection.isClosed())){
+                        connection = ((RRDsDatabase) dsProp).getDataSource();
+                    }
+                    
                     jasperPrint.add(
                             JasperFillManager.fillReport(
                                     prop.getJasperFile(),
                                     prop.getParameters(),
-                                    ((RRDsDatabase) dsProp).getDataSource()
+                                    connection
                             )
                     );
+                    
                 } else if (dsProp instanceof ARRDsJRDataSource) {
                     jasperPrint.add(
                             JasperFillManager.fillReport(
@@ -487,35 +499,50 @@ public class Report {
             PrinterNotFoundException,
             SignPdfException {
         LOG.traceEntry();
-        this.getExporter().exportReport();
 
-        if (outputStream != null) {
+        try {
+            this.getExporter().exportReport();
 
-            try {
-                outputStream.getClass().getMethod("close").invoke(outputStream);
-                LOG.info("Output stream closed");
-            } catch (NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
-                LOG.debug("Fial to close output stream");
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
             }
-        }
 
-        LOG.info("Report exported from Jasper");
-        LOG.debug("Check if the report is to be signed");
+            if (outputStream != null) {
 
-        if (this.prop.getType().equals(RRProperties.Types.pdf)) {
-            LOG.info("The report is a PDF");
-            RRPdfProperties pdfProp = (RRPdfProperties) this.prop.getTypeProperties();
-            if (pdfProp.isSignPDF()) {
-                this.signPdf();
+                try {
+                    outputStream.getClass().getMethod("close").invoke(outputStream);
+                    LOG.info("Output stream closed");
+                } catch (NoSuchMethodException | SecurityException | IllegalArgumentException |
+                         InvocationTargetException ex) {
+                    LOG.debug("Fial to close output stream");
+                }
+            }
+
+            LOG.info("Report exported from Jasper");
+            LOG.debug("Check if the report is to be signed");
+
+            if (this.prop.getType().equals(RRProperties.Types.pdf)) {
+                LOG.info("The report is a PDF");
+                RRPdfProperties pdfProp = (RRPdfProperties) this.prop.getTypeProperties();
+                if (pdfProp.isSignPDF()) {
+                    this.signPdf();
+                } else {
+                    LOG.info("The report is not seted to be signed");
+                }
             } else {
-                LOG.info("The report is not seted to be signed");
+                LOG.info("The report is not a PDF (is not to be signed)");
             }
-        } else {
-            LOG.info("The report is not a PDF (is not to be signed)");
-        }
 
-        LOG.traceExit("End of export report, executed in {} miliseconds",
-                ChronoUnit.MILLIS.between(start, LocalDateTime.now()));
+            LOG.traceExit("End of export report, executed in {} miliseconds",
+                    ChronoUnit.MILLIS.between(start, LocalDateTime.now()));
+
+        }catch (Throwable e){
+            throw e;
+        }finally {
+            if(connection != null && !connection.isClosed()){
+                connection.close();
+            }
+        }
     }
 
     /**

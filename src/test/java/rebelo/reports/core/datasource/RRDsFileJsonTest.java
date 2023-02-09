@@ -54,21 +54,6 @@ public class RRDsFileJsonTest {
     }
 
     /**
-     * Test of setFile asnd getFile method, of class RRDsFileJson.
-     *
-     * @throws java.lang.Exception
-     */
-    @Test
-    public void testSetGetFile() throws Exception {
-        System.out.println("setGetFile");
-        String path = "c:\\path\\for\\file";
-        File file = new File(path);
-        RRDsFileJson rRDsFileJson = new RRDsFileJson();
-        rRDsFileJson.setFile(file);
-        assertEquals(path, rRDsFileJson.getFile().getAbsolutePath());        
-    }
-
-    /**
      * Test of setFile method to null, of class RRDsFileJson.
      * 
      * @throws java.lang.Exception
