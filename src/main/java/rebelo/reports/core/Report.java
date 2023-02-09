@@ -214,7 +214,7 @@ public class Report {
      * Get the JasperReport engine
      *
      * When o getJasperPrint or you generate the report if the not set it will
-     * be set automatic.However the RRProperties parameters, jasper file and
+     * be set automatic. However, the RRProperties parameters, jasper file and
      * driver properties must be set or will throw a exception, because
      * JasperPrint can not be instantiated without this parameters.This method
      * exist to be possible to manipulate the JasperPrint before the generation
@@ -237,9 +237,10 @@ public class Report {
 
             for (int index = 1; index <= prop.getCopies(); index++) {
 
-                LOG.debug("Create JasperPrint index '"
-                        + new StringBuilder().append(index).toString()
-                        + "'");
+                LOG.debug(new StringBuilder().append("Create JasperPrint index '")
+                        .append(index)
+                        .append("'")
+                );
 
                 prop.getParameters().put(RR_INDEX_PARAMETER, index);
 
@@ -539,9 +540,7 @@ public class Report {
         }catch (Throwable e){
             throw e;
         }finally {
-            if(connection != null && !connection.isClosed()){
-                connection.close();
-            }
+            this.closeConnection();
         }
     }
 
@@ -612,5 +611,28 @@ public class Report {
             throw new SignPdfException(e);
         }
     }
+
+    /**
+     * Get Sql connection
+     * @return
+     */
+    public Connection getConnection() {
+        return connection;
+    }
+
+    /**
+     * Get Sql connection
+     * @return
+     */
+    public void closeConnection()  {
+        try {
+            if (connection != null && !connection.isClosed()) {
+                connection.close();
+            }
+        }catch (Throwable e){
+            LOG.error(e.getMessage());
+        }
+    }
+
 
 }

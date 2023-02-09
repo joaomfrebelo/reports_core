@@ -347,7 +347,6 @@ public class ReportTest {
         } catch (Exception e) {
             fail(e.getMessage());
         }
-
     }
 
     /**
@@ -397,6 +396,217 @@ public class ReportTest {
                 signpdf.getAbsolutePath()
         );
         rRSignPdf.signPdf();
+    }
+
+    
+
+    /**
+     * Test of getExporter method, of class Report.
+     */
+    @Test
+    public void testExportReportFromJasperreportsExportExporter() {
+        try {
+            ClassLoader classLoader = getClass().getClassLoader();
+            File resDir = new File(classLoader.getResource("./").getFile());
+            String resDirPath = resDir.getAbsolutePath();
+            File outdir = new File(resDirPath + "/generated_reports");
+            outdir.mkdir();
+            File[] dbs = resDir.listFiles((File dir, String name) -> name.matches("\\w+\\.properties$"));
+
+            for (File propFile : dbs) {
+                try {
+                    java.util.Properties dbprop = new java.util.Properties();
+                    dbprop.load(new FileInputStream(propFile));
+
+                    if (dbprop.getProperty("enable", "0").equals("1") == false) {
+                        continue;
+                    }
+
+                    String propReport = dbprop.getProperty("report", null);
+                    String propConnection = dbprop.getProperty("connection", null);
+                    String propDriver = dbprop.getProperty("driver", null);
+                    String propUser = dbprop.getProperty("user", null);
+                    String propPassword = dbprop.getProperty("password", null);
+                    String propOutname = dbprop.getProperty("outname", null);
+                    String propDatasource = dbprop.getProperty("datasource", null);
+                    String propFilePath = dbprop.getProperty("filepath", null);
+                    String propUrl = dbprop.getProperty("url", null);
+                    String propType = dbprop.getProperty("type", null);
+                    String propCopies = dbprop.getProperty("copies", "1");
+
+                    ArrayList<RRProperties.Types> testType = new ArrayList<>();
+                    String[] spTypes = dbprop.getProperty("types").split(",");
+                    if (spTypes.length == 0) {
+                        System.out.println("No type tp be test in file " + propFile);
+                    }
+                    for (String type : spTypes) {
+                        testType.add(RRProperties.Types.valueOf(type));
+                    }
+
+                    if (propReport == null) {
+                        throw new Exception("Report file path is not defined in " + propFile.getName());
+                    }
+
+                    File report = new File(resDirPath.concat(propReport));
+                    if (report.isFile() == false || report.canRead() == false) {
+                        throw new Exception(resDirPath
+                                .concat(propReport)
+                                .concat(" is not a file or can not read"));
+                    }
+
+                    for (RRProperties.Types type : RRProperties.Types.values()) {
+                        try {
+
+                            if (testType.contains(type) == false) {
+                                continue;
+                            }
+
+                            IRRDsProperties dsProp;
+
+                            switch (propDatasource) {
+                                case "database":
+                                    if (propDriver == null) {
+                                        throw new Exception("Driver name is not defined in " + propFile.getName());
+                                    }
+
+                                    if (propConnection == null) {
+                                        throw new Exception("Connection string is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsDatabase();
+                                    ((RRDsDatabase) dsProp).setConnString(propConnection);
+                                    ((RRDsDatabase) dsProp).setDriver(propDriver);
+                                    ((RRDsDatabase) dsProp).setPassword(propPassword);
+                                    ((RRDsDatabase) dsProp).setUser(propUser);
+                                    break;
+                                case "json_file":
+                                    if (propFilePath == null) {
+                                        throw new Exception("File path is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsFileJson();
+                                    ((RRDsFileJson) dsProp).setFile(new File(propFilePath));
+                                    break;
+                                case "json_http":
+                                    if (propUrl == null) {
+                                        throw new Exception("Url is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsHttpJson();
+                                    ((RRDsHttpJson) dsProp).setUrl(new URL(propUrl));
+                                    ((RRDsHttpJson) dsProp).setType(ARRDsHttp.Type.valueOf(propType));
+                                    break;
+                                case "json_https":
+                                    if (propUrl == null) {
+                                        throw new Exception("Url is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsHttpsJson();
+                                    ((RRDsHttpsJson) dsProp).setUrl(new URL(propUrl));
+                                    ((RRDsHttpsJson) dsProp).setType(ARRDsHttp.Type.valueOf(propType));
+                                    break;
+                                case "xml_file":
+                                    if (propFilePath == null) {
+                                        throw new Exception("File path is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsFileXml();
+                                    ((RRDsFileXml) dsProp).setFile(new File(propFilePath));
+                                    break;
+                                case "xml_http":
+                                    if (propUrl == null) {
+                                        throw new Exception("Url is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsHttpXml();
+                                    ((RRDsHttpXml) dsProp).setUrl(new URL(propUrl));
+                                    ((RRDsHttpJson) dsProp).setType(ARRDsHttp.Type.valueOf(propType));
+                                    break;
+                                case "xml_https":
+                                    if (propUrl == null) {
+                                        throw new Exception("Url is not defined in " + propFile.getName());
+                                    }
+                                    dsProp = new RRDsHttpsXml();
+                                    ((RRDsHttpsXml) dsProp).setUrl(new URL(propUrl));
+                                    ((RRDsHttpJson) dsProp).setType(ARRDsHttp.Type.valueOf(propType));
+                                    break;
+                                default:
+                                    throw new Exception("unknowed test type");
+                            }
+
+                            RRProperties prop = new RRProperties();
+                            prop.setCopies(Integer.parseInt(propCopies));
+                            prop.setType(type);
+                            prop.setJasperFile(report.getAbsolutePath());
+                            prop.setDataSourceProperties(dsProp); //(IRRDsProperties)dsProp
+
+                            File outfile = new File(outdir + "/" + propOutname + "." + type.toString());
+
+                            if (outfile.exists()) {
+                                outfile.delete();
+                            }
+
+                            prop.setOutputFile(outfile.getAbsolutePath());
+
+                            //Set parameters
+                            prop.addParameter("P_STRING", "Parameter String");
+                            prop.addParameter("P_BOOLEAN", true);
+                            prop.addParameter("P_DOUBLE", new Double(999));
+                            prop.addParameter("P_FLOAT", 9.09F);
+                            prop.addParameter("P_INTEGER", 9);
+                            prop.addParameter("P_LONG", new Long(49));
+                            prop.addParameter("P_SHORT", new Short("109"));
+                            prop.addParameter("P_BIG_DECIMAL", new BigDecimal(BigInteger.TEN));
+                            prop.addParameter("P_SQL_DATE", new java.sql.Date(new Long(1254729890)));
+                            prop.addParameter("P_SQL_TIME", new java.sql.Time(199));
+                            prop.addParameter("P_TIMESTAMPT", new java.sql.Timestamp(199999));
+                            prop.addParameter("P_DATE", new java.util.Date());
+
+                            if (type.equals(RRProperties.Types.print)) {
+                                RRPrintProperties prt = (RRPrintProperties) prop.getTypeProperties();
+                                //prt.setSelectedPrinter("Microsoft Print to PDF");
+                                //prt.setSelectedPrinter("HP Photosmart C4500 series");
+                                // No print selection will print to default printer
+                                prt.getPrintRequestAttributeSet().add(MediaSizeName.ISO_A4);
+                                // Example of printig two copies
+                                // If you add copies like this this the paramter RR_INDEX_PARAMETER will be 1 for tha two copies
+                                // If yoi need to know teh RR_INDEX_PARAMETER the correct way is ser the copies propertie
+                                // prt.getPrintRequestAttributeSet().add(new Copies(2));
+                            }
+
+                            Report rep = new Report(prop);
+                            net.sf.jasperreports.export.Exporter exporter =  rep.getExporter();
+
+                            exporter.exportReport();
+                            
+                            assertFalse(rep.getConnection().isClosed());
+                            rep.closeConnection();
+                            assertTrue(rep.getConnection().isClosed());
+                            
+                            
+                            if (type.equals(RRProperties.Types.print) == false) {
+
+                                assertTrue(String.format("Test for type '%s' of file '%s'",
+                                        type.toString(),
+                                        propFile.getAbsolutePath()),
+                                        outfile.exists());
+                            }
+
+                            if (type.equals(RRProperties.Types.pdf)) {
+                                signPdf(prop);
+                            }
+
+                        } catch (Exception e) {
+                            fail(String.format("Failing test for type '%s' of file '%s', with message '%s'",
+                                    type.toString(),
+                                    propFile.getAbsolutePath(),
+                                    e.getMessage()));
+                        }
+                    }
+                } catch (Exception e) {
+                    fail(String.format("Failing test for file '%s'; with message: '%s'",
+                            propFile.getAbsolutePath(),
+                            e.getMessage()));
+                }
+            }
+
+        } catch (Exception e) {
+            fail(e.getMessage());
+        }
     }
 
 }
